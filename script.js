@@ -220,6 +220,9 @@ function switchToTheme(themeKey) {
     // Populate technical skills section
     populateTechnicalSkills();
 
+    // Populate experience section
+    populateExperience();
+
 // Populate technical skills section
 function populateTechnicalSkills() {
     if (!config.technicalSkills?.enabled) return;
@@ -293,16 +296,83 @@ function initTechnicalSkillsAnimations() {
     // Technical skills remain perfectly static at all times
 }
 
+// Populate experience section from configuration
+function populateExperience() {
+    if (!config.experience?.enabled) return;
+
+    // Update experience section title
+    const experienceTitle = document.querySelector('.experience-title');
+    if (experienceTitle && config.experience?.title) {
+        experienceTitle.textContent = config.experience.title;
+    }
+
+    // Populate experience timeline
+    const experienceTimeline = document.querySelector('.experience-timeline');
+    if (!experienceTimeline || !config.experience?.positions) return;
+
+    experienceTimeline.innerHTML = '';
+
+    config.experience.positions.forEach((position, index) => {
+        const positionDiv = document.createElement('div');
+        positionDiv.className = 'experience-item';
+
+        positionDiv.innerHTML = `
+            <div class="experience-header">
+                <h3 class="experience-position">${position.title}</h3>
+                <div class="experience-company">${position.company}</div>
+                <div class="experience-period">${position.period}</div>
+            </div>
+            <div class="experience-description">
+                <p>${position.description}</p>
+            </div>
+        `;
+
+        experienceTimeline.appendChild(positionDiv);
+    });
+
+    // Initialize experience animations
+    initExperienceAnimations();
+}
+
+// Experience section animations
+function initExperienceAnimations() {
+    const experienceItems = document.querySelectorAll('.experience-item');
+
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    experienceItems.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(30px)';
+        item.style.transition = `opacity 0.6s ease ${index * 0.2}s, transform 0.6s ease ${index * 0.2}s`;
+        observer.observe(item);
+    });
+}
+
     // Update about section title
     const aboutTitle = document.querySelector('.about-title');
     if (aboutTitle && config.about?.title) {
         aboutTitle.textContent = config.about.title;
     }
 
-    // Update about description
+    // Update about description (will be handled by typing animation)
     const aboutDescription = document.querySelector('.about-description');
-    if (aboutDescription && config.about?.description) {
-        aboutDescription.textContent = config.about.description;
+    if (aboutDescription) {
+        // Clear initial content for typing animation
+        aboutDescription.textContent = '';
+        aboutDescription.setAttribute('data-text', config.about?.description || '');
     }
 
     // Update services
@@ -354,6 +424,9 @@ function initTechnicalSkillsAnimations() {
 
     // Populate video links section
     populateVideoLinks();
+
+    // Populate experience section
+    populateExperience();
 
     // Populate character references section
     populateReferences();
@@ -658,34 +731,55 @@ if (typeof document !== 'undefined') {
     });
 }
 
-// Typing Animation for Hero Text (Optimized)
+// Typing Animation for Hero Text and About Bio (Optimized)
 function initTypingAnimation() {
-    if (!config.personal?.greeting) return;
-    
-    const greeting = document.querySelector('.hero-greeting');
-    if (!greeting) return;
-    
-    const originalText = config.personal.greeting;
-    greeting.textContent = '';
-    
-    let i = 0;
     const typingSpeed = config.theme?.animations?.typingSpeed || 100;
-    
-    const typeWriter = function() {
-        if (i < originalText.length) {
-            greeting.textContent += originalText.charAt(i);
-            i++;
-            // Use requestAnimationFrame for better performance
-            requestAnimationFrame(() => {
-                setTimeout(typeWriter, typingSpeed);
-            });
+
+    // Hero greeting typing animation
+    if (config.personal?.greeting) {
+        const greeting = document.querySelector('.hero-greeting');
+        if (greeting) {
+            const originalText = config.personal.greeting;
+            greeting.textContent = '';
+            let i = 0;
+            const typeWriter = function() {
+                if (i < originalText.length) {
+                    greeting.textContent += originalText.charAt(i);
+                    i++;
+                    requestAnimationFrame(() => {
+                        setTimeout(typeWriter, typingSpeed);
+                    });
+                }
+            };
+
+            setTimeout(() => {
+                requestAnimationFrame(typeWriter);
+            }, 500);
         }
-    };
-    
-    // Start typing animation after a short delay
-    setTimeout(() => {
-        requestAnimationFrame(typeWriter);
-    }, 500);
+    }
+
+    // About bio typing animation
+    const aboutDescription = document.querySelector('.about-description');
+    if (aboutDescription && aboutDescription.getAttribute('data-text')) {
+        const originalText = aboutDescription.getAttribute('data-text');
+        aboutDescription.textContent = '';
+
+        let i = 0;
+        const typeWriter = function() {
+            if (i < originalText.length) {
+                aboutDescription.textContent += originalText.charAt(i);
+                i++;
+                requestAnimationFrame(() => {
+                    setTimeout(typeWriter, typingSpeed);
+                });
+            }
+        };
+
+        // Start about bio typing after hero greeting completes (with delay)
+        setTimeout(() => {
+            requestAnimationFrame(typeWriter);
+        }, 1500);
+    }
 }
 
 // Counter Animation for Statistics
@@ -1017,7 +1111,7 @@ function populateGallery() {
 function populateReferences() {
     if (!config.references?.enabled) return;
 
-    const referencesGrid = document.querySelector('.references-grid');
+    const referencesGrid = document.getElementById('references-grid');
     if (!referencesGrid || !config.references?.list) return;
 
     referencesGrid.innerHTML = '';
@@ -1028,7 +1122,7 @@ function populateReferences() {
 
         referenceCard.innerHTML = `
             <div class="reference-image">
-                <img src="${reference.image}" alt="${reference.name}">
+                <img src="${reference.image}" alt="${reference.name}" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face'">
             </div>
             <div class="reference-content">
                 <h3 class="reference-name">${reference.name}</h3>

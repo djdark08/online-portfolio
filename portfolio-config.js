@@ -1,5 +1,22 @@
 // Portfolio Configuration File
-// Edit this file to customize all aspects of your portfolio
+// =====================================================
+// EDITABLE PORTFOLIO CONFIGURATION
+// =====================================================
+// This file contains all the editable content for your portfolio website.
+// Simply modify the values below to customize your portfolio:
+//
+// 1. NAVIGATION: Add/remove menu items in the navigation section
+// 2. PERSONAL INFO: Update your name, title, bio, and contact details
+// 3. SECTIONS: Each major section is clearly marked as "EDITABLE"
+// 4. SKILLS: Add your technical skills and categorize them
+// 5. PROJECTS: Showcase your work and achievements
+// 6. EXPERIENCE: Add your professional background
+// 7. REFERENCES: Include professional recommendations
+// 8. CONTACT: Update your contact information and social links
+//
+// To disable any section, set "enabled: false"
+// To modify content, edit the text, URLs, and other properties
+// =====================================================
 
 const portfolioConfig = {
     // Server Configuration
@@ -23,19 +40,25 @@ const portfolioConfig = {
         profileImage: "/images/profile.jpg",
         resumeLink: "#", // Add your resume link here
         email: "agonia.lloyd8@gmail.com",
-        bio: "I am a versatile tech professional with a strong background in software development, robotics, and network engineering. Proficient in Python and C, I have worked on various robotics projects, integrating IoT and programming microcontrollers to create innovative solutions. I excel at diagnosing and resolving computer system issues while adapting to diverse environments. My expertise includes cloud computing (AWS), Kubernetes for managing containerized applications, and configuring MikroTik devices. Additionally, I specialize in building and maintaining network servers to ensure security, efficiency, and scalability. I am passionate about leveraging technology to solve real-world problems and continuously expanding my knowledge in emerging technologies.",
+        bio: "I am a versatile tech professional with a strong background in software development, robotics, and network engineering.",
         location: "Davao City, Philippines"
     },
 
-    // Navigation Menu
+    // Navigation Menu - EDITABLE SECTIONS
+    // Add, remove, or modify menu items here. Each item needs a name and link.
+    // The link should match the ID of the section in index.html (e.g., #home, #about)
     navigation: {
         logo: "❖",
         menuItems: [
-            { name: "Home", link: "#home" },
-            { name: "Technical Skills", link: "#technical-skills" },
-            { name: "Gallery", link: "#projects" },
-            { name: "About", link: "#about" },
-            { name: "Contacts", link: "#contacts" }
+            { name: "Home", link: "#home", enabled: true },
+            { name: "About Me", link: "#about", enabled: true },
+            { name: "Technical Skills", link: "#technical-skills", enabled: true },
+            { name: "Experiences", link: "#experience", enabled: true },
+            { name: "Gallery", link: "#projects", enabled: true },
+            { name: "References", link: "#references", enabled: true },
+            { name: "Contacts", link: "#contacts", enabled: true }
+            // To disable a section, set enabled: false
+            // To add a new section, add: { name: "Your Section", link: "#your-section-id", enabled: true }
         ]
     },
 
@@ -53,9 +76,10 @@ const portfolioConfig = {
         }
     },
 
-    // Technical Skills Section
+    // Technical Skills Section - EDITABLE
+    // Add, remove, or modify skill categories and skills here
     technicalSkills: {
-        enabled: true,
+        enabled: true, // Set to false to hide this section
         title: "Technical Skills",
         subtitle: "A comprehensive overview of my technical expertise across multiple domains.",
         categories: [
@@ -147,10 +171,11 @@ const portfolioConfig = {
         animationSpeed: "30s" // Animation duration for scrolling
     },
 
-    // About Section
+    // About Section - EDITABLE
+    // Customize your professional description, services, and statistics here
     about: {
         title: "About me",
-        description: "I am a versatile tech professional with a strong background in software development, robotics, and network engineering.",
+        description: "I am a versatile tech professional with a strong background in software development, robotics, and network engineering. Proficient in Python and C, I have worked on various robotics projects, integrating IoT and programming microcontrollers to create innovative solutions. I excel at diagnosing and resolving computer system issues while adapting to diverse environments. My expertise includes cloud computing (AWS), Kubernetes for managing containerized applications, and configuring MikroTik devices. Additionally, I specialize in building and maintaining network servers to ensure security, efficiency, and scalability.",
         
         services: [
             {
@@ -259,7 +284,7 @@ const portfolioConfig = {
 
         animations: {
             enabled: true,
-            typingSpeed: 100, // milliseconds per character
+            typingSpeed: 30, // milliseconds per character (faster)
             counterDuration: 2000, // milliseconds
             scrollSpeed: "30s", // for skills animation
             parallaxEnabled: false // set to true for parallax effect
@@ -272,9 +297,10 @@ const portfolioConfig = {
         }
     },
 
-    // Projects Section
+    // Projects Section - EDITABLE
+    // Add, remove, or modify your project portfolio here
     projects: {
-        enabled: true,
+        enabled: true, // Set to false to hide this section
         title: "Gallery",
         list: [
             {
@@ -284,7 +310,7 @@ const portfolioConfig = {
                 link: "https://github.com/yourusername/ecommerce-platform",
                 technologies: ["Windows Server", "Linux Server", "Cisco ASA", "Cisco IOS", "Python", "Ansible", "Docker", "Kubernetes"],
                 featured: true,
-                date: ""
+                date: "Project"
             },
             {
                 name: "PLC Control System",
@@ -293,7 +319,7 @@ const portfolioConfig = {
                 link: "https://github.com/yourusername/plc-automation",
                 technologies: ["PLC", "SCADA", "Industrial IoT", "Python"],
                 featured: false,
-                date: ""
+                date: "Project"
             },
             {
                 name: "3D Printer Farming System",
@@ -302,7 +328,7 @@ const portfolioConfig = {
                 link: "https://github.com/yourusername/3d-printer-farming-system",
                 technologies: ["Arduino", "Raspberry Pi", "3D Printing", "CNC Milling", "Laser Cutting", "CNC Router"],
                 featured: false,
-                date: ""
+                date: "Project"
             },
             {
                 name: "Teaching Robotics with VEX Robotics",
@@ -311,7 +337,7 @@ const portfolioConfig = {
                 link: "https://github.com/yourusername/teaching-robotics",
                 technologies: ["VEX Robotics", "ROS", "Python", "C++"],
                 featured: false,
-                date: ""
+                date: "Project"
             },
             {
                 name: "Design and build network monitoring systems",
@@ -320,7 +346,7 @@ const portfolioConfig = {
                 link: "https://github.com/yourusername/network-monitoring",
                 technologies: ["Grafana", "Prometheus", "InfluxDB", "Python", "Ansible", "Docker", "Kubernetes"],
                 featured: false,
-                date: "2023-09-15"
+                date: "Project"
             },
             {
                 name: "R&D AI Algorithm",
@@ -329,7 +355,7 @@ const portfolioConfig = {
                 link: "https://github.com/yourusername/network-monitoring",
                 technologies: ["LLM", "Python", "C++", "Raspberry Pi", "Arduino", "ROS", "OpenCV", "TensorFlow", "PyTorch"],
                 featured: false,
-                date: "2023-09-15"
+                date: "Project"
             },
         ]
     },
@@ -375,7 +401,7 @@ const portfolioConfig = {
     // Video Links Section
     videoLinks: {
         enabled: true,
-        title: "Video Demonstrations",
+        title: "Videos",
         videos: [
             {
                 platform: "youtube",
@@ -397,53 +423,111 @@ const portfolioConfig = {
                 description: "Advanced human detection system using Histogram of Oriented Gradients (HOG) cascades and computer vision techniques",
                 videoId: "aITQ3wRgmTE",
                 thumbnail: "https://img.youtube.com/vi/aITQ3wRgmTE/maxresdefault.jpg"
+            },
+            {
+                platform: "tiktok",
+                title: "Robotics R&D Project Demo",
+                description: "Demonstrating advanced robotics research and development project with innovative automation solutions",
+                videoId: "7344258260507184389",
+                thumbnail: "https://www.tiktok.com/@grayagony/video/7344258260507184389?is_from_webapp=1&sender_device=pc&web_id=7555855229960013320"
+            },
+            {
+                platform: "tiktok",
+                title: "Dancing Servos using Arduino",
+                description: "Creative servo motor choreography project demonstrating precise Arduino control and timing algorithms",
+                videoId: "7312649776233729286",
+                thumbnail: "https://www.tiktok.com/@grayagony/video/7312649776233729286?is_from_webapp=1&sender_device=pc&web_id=7555855229960013320"
+            },
+            {
+                platform: "tiktok",
+                title: "Hexapod Robot Calibration",
+                description: "Precise hexapod robot calibration process using advanced kinematics and sensor integration techniques",
+                videoId: "7193904203901734171",
+                thumbnail: "https://www.tiktok.com/@grayagony/video/7193904203901734171?is_from_webapp=1&sender_device=pc&web_id=7555855229960013320"
             }
         ]
     },
 
-    // Character References Section
+    // Character References Section - EDITABLE
+    // Add, remove, or modify your professional references here
     references: {
-        enabled: true,
+        enabled: true, // Set to false to hide this section
         title: "Character References",
         list: [
             {
-                name: "Dr. Ruvel Cuasito",
-                title: "PhD in Computer Engineering",
-                relationship: "Professor & Research Advisor",
+                name: "Dr. Ruvel J. Cuasito Sr.  PhD.",
+                title: "USTP COT DEAN, CIT ",
+                relationship: "Dean & Research Advisor",
                 email: "ruvel.cuasito@university.edu",
-                phone: "+63-917-123-4567",
-                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face"
+                phone: "09171307793",
+                image: "/images/docruvel.png"
             },
             {
-                name: "Engr. Taurine Auxilio",
-                title: "Masters in Information Technology",
+                name: "Engr. Taurine C. Auxilio",
+                title: "USTP Chairperson, IT",
                 relationship: "Industry Mentor",
-                email: "maria.santos@company.com",
-                phone: "+63-918-765-4321",
-                image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face"
+                email: "taurine.auxilio@university.edu",
+                phone: "09778038587",
+                image: "/images/mamtau.png"
             },
             {
-                name: "Prof. Helen Grace",
-                title: "Masters in Robotics Engineering",
+                name: "Engr. Helen Grace Gonzales",
+                title: "USTP Chairperson, ROBOTICS",
                 relationship: "Academic Supervisor",
-                email: "jose.cruz@university.edu",
-                phone: "+63-919-987-6543",
-                image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face"
+                email: "helen.grace@university.edu",
+                phone: "09674297770",
+                image: "/images/hg.png"
+            },
+            {
+                name: "Engr. Raymond S. Saldua",
+                title: "USTP Instructor, Industrial Automation",
+                relationship: "Academic Instructor",
+                email: "raymond.saldua@university.edu",
+                phone: "09757097300",
+                image: "/images/saldua.png"
             }
         ]
     },
 
-    // Contact Section (Simplified)
+    // Experience Section - EDITABLE
+    // Add, remove, or modify your professional experience positions here
+    experience: {
+        enabled: true, // Set to false to hide this section
+        title: "Experiences",
+        positions: [
+            {
+                title: "Programmer Consultant",
+                company: "Freelance",
+                period: "06/2021 - 03/2024",
+                description: "In my role as a Programmer Consultant, I developed a facial detection algorithm utilizing Haar cascade techniques in Python. I tailored a unique cascade algorithm to meet specific client requirements, ensuring optimal performance for their application. Additionally, I created a program that was successfully integrated into a microcontroller, enhancing its functionality and enabling efficient real-time processing of facial recognition tasks. This experience allowed me to refine my skills in algorithm development and embedded systems, contributing to innovative solutions for my clients."
+            },
+            {
+                title: "Local Internet Service Provider",
+                company: "Self-Employed",
+                period: "04/2019 - 02/2023",
+                description: "During the COVID pandemic, I launched a small business as a Local Internet Service Provider, which provided me with invaluable exposure to networking and cybersecurity. In this role, I designed my own network topology and constructed a server to host various services, enabling me to offer reliable internet access to my clients. This hands-on experience was crucial in developing my technical skills and understanding of networking principles. The challenges I encountered while managing the business laid a strong foundation for my expertise in the field, allowing me to cultivate a deep understanding of network infrastructure and security protocols."
+            },
+            {
+                title: "Network Specialist Consultant",
+                company: "Contract-Based",
+                period: "02/2023 - 06/2023",
+                description: "As a contract-based Network Specialist Consultant, I provided comprehensive networking solutions for my client. I was responsible for designing their network topology and firewall architecture, ensuring robust security measures and optimal performance. My work involved assessing their existing infrastructure and implementing a tailored solution that addressed their specific needs. Additionally, I optimized their load balancing systems to enhance traffic management, ensuring efficient resource allocation and minimizing latency. This role allowed me to leverage my expertise in network design and security, contributing to a more resilient and efficient network environment for my client."
+            }
+        ]
+    },
+
+    // Contact Section - EDITABLE
+    // Update your contact information and social media links here
     contacts: {
-        enabled: true,
+        enabled: true, // Set to false to hide this section
         title: "Contact Information",
         email: "agonia.lloyd8@gmail.com",
         phone: "+63-9606250319",
         location: "Davao City, Philippines",
         social: {
             github: "https://github.com/djdark08",
-            linkedin: "https://linkedin.com/in/lloydagonia",
-            facebook: "https://facebook.com/lloydagonia"
+            linkedin: "https://www.linkedin.com/in/lloyd-agonia-573300308/",
+            facebook: "https://www.facebook.com/agonialloyd/"
         }
     }
 };

@@ -865,9 +865,7 @@ body:not(.loaded) * {
     transition: opacity 0.3s ease;
 }
 
-.project-card:hover .project-overlay {
-    opacity: 1;
-}
+/* Removed hover effect for project overlay - no "View Project" button on hover */
 
 .project-link {
     color: white;
@@ -904,12 +902,7 @@ body:not(.loaded) * {
 }
 
 .project-date {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    background-color: rgba(255, 107, 97, 0.1);
-    padding: 0.3rem 0.8rem;
-    border-radius: 15px;
-    border: 1px solid rgba(255, 107, 97, 0.2);
+    display: none; /* Hidden - date removed from gallery */
 }
 
 .project-description {
@@ -955,6 +948,7 @@ body:not(.loaded) * {
 .contact-title {
     font-size: 3rem;
     font-weight: 700;
+    text-align: center;
     color: var(--text-primary);
     margin-bottom: 1rem;
 }
@@ -1021,6 +1015,20 @@ body:not(.loaded) * {
     font-size: 1.1rem;
     color: var(--text-primary);
     font-weight: 500;
+}
+
+.email-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.email-link:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
 }
 
 .contact-form-container {
@@ -1253,6 +1261,110 @@ body:not(.loaded) * {
     color: var(--text-secondary);
     font-size: 0.9rem;
     line-height: 1.5;
+}
+
+/* Experience Section */
+.experience {
+    padding: 5rem 0;
+    background-color: var(--bg-color);
+}
+
+.experience-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.experience-title {
+    font-size: 3rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+    color: var(--text-primary);
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.experience-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-color), transparent);
+    border-radius: 2px;
+}
+
+.experience-timeline {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    /* Auto-scaling columns based on screen size */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.experience-item {
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 600px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.experience-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border-color: var(--accent-color);
+}
+
+.experience-header {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.5rem;
+}
+
+.experience-position {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.experience-company {
+    font-size: 1.1rem;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.experience-period {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    background-color: rgba(255, 107, 97, 0.1);
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 107, 97, 0.2);
+    display: inline-block;
+}
+
+.experience-description {
+    text-align: left;
+}
+
+.experience-description p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 1rem;
 }
 
 /* Character References Section */
