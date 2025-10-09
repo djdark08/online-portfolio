@@ -1,0 +1,160 @@
+/* Light Theme - Clean and Professional */
+:root {
+    --bg-color: #ffffff;
+    --card-bg: #f8f9fa;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --accent-color: #007bff;
+    --accent-hover: #0056b3;
+    --border-color: #dee2e6;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Hero Section Background */
+.hero {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+/* Profile Background Effects */
+.profile-bg {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    opacity: 0.1;
+}
+
+.profile-bg::before {
+    background: linear-gradient(45deg, transparent, #007bff, transparent);
+    opacity: 0.3;
+}
+
+/* Navigation Styling */
+.navbar {
+    background-color: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+}
+
+/* Skills Animation */
+.skill-item {
+    background-color: rgba(0, 123, 255, 0.1);
+    border: 1px solid rgba(0, 123, 255, 0.2);
+}
+
+.skill-item:hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    background-color: rgba(0, 123, 255, 0.2);
+}
+
+/* Project Cards */
+.project-card.featured {
+    border: 2px solid var(--accent-color);
+}
+
+.project-date {
+    background-color: rgba(0, 123, 255, 0.1);
+    border: 1px solid rgba(0, 123, 255, 0.2);
+}
+
+.tech-tag {
+    background-color: rgba(0, 123, 255, 0.15);
+    color: var(--accent-color);
+    border: 1px solid rgba(0, 123, 255, 0.3);
+}
+
+/* Contact Section */
+.contact-simple {
+    background-color: var(--bg-color);
+}
+
+.contact-item-simple {
+    background-color: var(--bg-color);
+}
+
+/* Video Links */
+.video-links {
+    background-color: var(--card-bg);
+}
+
+.video-link-card {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+}
+
+/* Character References */
+.references {
+    background-color: var(--card-bg);
+}
+
+.reference-card {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+}
+
+/* Social Links */
+.social-link {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.social-link:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--accent-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+}
+
+.btn-secondary {
+    border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+/* Form Elements */
+.form-group input,
+.form-group textarea {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* Circuit Board Animation */
+.hero::before {
+    background-image:
+        linear-gradient(90deg, transparent 49%, rgba(0, 123, 255, 0.03) 50%, transparent 51%),
+        linear-gradient(0deg, transparent 49%, rgba(0, 123, 255, 0.03) 50%, transparent 51%),
+        radial-gradient(circle at 25% 25%, rgba(0, 123, 255, 0.05) 2px, transparent 2px),
+        radial-gradient(circle at 75% 75%, rgba(0, 123, 255, 0.05) 2px, transparent 2px);
+}
+
+/* Enhanced Profile Background */
+.profile-bg {
+    background: conic-gradient(from 0deg, transparent, rgba(0, 123, 255, 0.1), transparent, rgba(0, 123, 255, 0.1), transparent);
+}
+
+.profile-bg::after {
+    background: linear-gradient(to bottom, transparent, rgba(0, 123, 255, 0.3), transparent);
+}

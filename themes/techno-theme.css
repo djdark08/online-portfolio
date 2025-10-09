@@ -1,0 +1,215 @@
+/* Techno Theme - Electric Dreams */
+:root {
+    --bg-color: #0f1419;
+    --card-bg: #1a2332;
+    --text-primary: #00ff88;
+    --text-secondary: #00b4d8;
+    --accent-color: #ff0080;
+    --accent-hover: #ff1a90;
+    --border-color: #1e2d3d;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Hero Section Background */
+.hero {
+    background: linear-gradient(135deg, #0f1419 0%, #1a2332 100%);
+}
+
+/* Profile Background Effects - Techno Style */
+.profile-bg {
+    background: linear-gradient(45deg, #ff0080, #00ff88);
+    opacity: 0.15;
+    animation: techno-pulse 2s ease-in-out infinite;
+}
+
+.profile-bg::before {
+    background: linear-gradient(45deg, transparent, #00ff88, transparent);
+    opacity: 0.35;
+    animation: techno-rotate 12s linear infinite reverse;
+}
+
+@keyframes techno-pulse {
+    0% { opacity: 0.1; transform: scale(1) rotate(0deg); }
+    50% { opacity: 0.25; transform: scale(1.02) rotate(2deg); }
+    100% { opacity: 0.15; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes techno-rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Navigation Styling - Techno */
+.navbar {
+    background-color: rgba(15, 20, 25, 0.95);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+}
+
+/* Skills Animation - Techno */
+.skill-item {
+    background-color: rgba(255, 0, 128, 0.15);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.2);
+}
+
+.skill-item:hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    background-color: rgba(255, 0, 128, 0.25);
+    box-shadow: 0 0 15px rgba(255, 0, 128, 0.4);
+    text-shadow: 0 0 8px var(--accent-color);
+}
+
+/* Project Cards - Techno */
+.project-card.featured {
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 0 15px rgba(255, 0, 128, 0.3);
+}
+
+.project-date {
+    background-color: rgba(0, 255, 136, 0.15);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.tech-tag {
+    background-color: rgba(255, 0, 128, 0.2);
+    color: var(--accent-color);
+    border: 1px solid rgba(255, 0, 128, 0.4);
+    text-shadow: 0 0 5px var(--accent-color);
+}
+
+/* Contact Section - Techno */
+.contact-simple {
+    background-color: var(--bg-color);
+}
+
+.contact-item-simple {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+}
+
+/* Video Links - Techno */
+.video-links {
+    background-color: var(--card-bg);
+}
+
+.video-link-card {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+}
+
+/* Character References - Techno */
+.references {
+    background-color: var(--card-bg);
+}
+
+.reference-card {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+}
+
+/* Social Links - Techno */
+.social-link {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.social-link:hover {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    box-shadow: 0 0 20px var(--accent-color);
+    text-shadow: 0 0 10px var(--accent-color);
+}
+
+/* Buttons - Techno */
+.btn-primary {
+    background-color: var(--accent-color);
+    box-shadow: 0 0 15px rgba(255, 0, 128, 0.4);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    box-shadow: 0 0 25px rgba(255, 0, 128, 0.6);
+    text-shadow: 0 0 10px var(--accent-color);
+}
+
+.btn-secondary {
+    border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    box-shadow: 0 0 15px rgba(255, 0, 128, 0.3);
+}
+
+/* Form Elements - Techno */
+.form-group input,
+.form-group textarea {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(255, 0, 128, 0.2), 0 0 15px rgba(255, 0, 128, 0.3);
+}
+
+/* Circuit Board Animation - Techno Enhanced */
+.hero::before {
+    background-image:
+        linear-gradient(90deg, transparent 49%, rgba(0, 255, 136, 0.08) 50%, transparent 51%),
+        linear-gradient(0deg, transparent 49%, rgba(0, 180, 216, 0.05) 50%, transparent 51%),
+        radial-gradient(circle at 25% 25%, rgba(255, 0, 128, 0.1) 2px, transparent 2px),
+        radial-gradient(circle at 75% 75%, rgba(0, 255, 136, 0.1) 2px, transparent 2px);
+    animation: techno-circuit 10s linear infinite;
+}
+
+@keyframes techno-circuit {
+    0% {
+        background-position: 0 0, 0 0, 0 0, 0 0;
+    }
+    100% {
+        background-position: 60px 60px, 60px 60px, 60px 60px, 60px 60px;
+    }
+}
+
+/* Enhanced Profile Background - Techno */
+.profile-bg {
+    background: conic-gradient(from 0deg,
+        transparent,
+        rgba(0, 255, 136, 0.15),
+        transparent,
+        rgba(0, 180, 216, 0.15),
+        transparent,
+        rgba(255, 0, 128, 0.2),
+        transparent
+    );
+}
+
+.profile-bg::after {
+    background: linear-gradient(to bottom,
+        transparent,
+        rgba(0, 255, 136, 0.3),
+        rgba(255, 0, 128, 0.3),
+        transparent
+    );
+    animation: techno-glow 3s ease-in-out infinite;
+}
+
+@keyframes techno-glow {
+    0% { opacity: 0.2; }
+    50% { opacity: 0.6; }
+    100% { opacity: 0.2; }
+}
