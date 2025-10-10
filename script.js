@@ -14,7 +14,10 @@ if (typeof window !== 'undefined' && window.portfolioConfig) {
 function populateFromConfig() {
     // Update page title
     const titleElement = document.getElementById('page-title');
-    if (titleElement && config.personal?.name) {
+    if (titleElement && config.personal?.pageTitle) {
+        titleElement.textContent = config.personal.pageTitle;
+    } else if (titleElement && config.personal?.name && config.personal?.title) {
+        // Fallback to constructing from name and title if pageTitle is not set
         titleElement.textContent = `${config.personal.name} - ${config.personal.title}`;
     }
 
@@ -177,7 +180,8 @@ function switchToTheme(themeKey) {
     // Update hero title
     const heroTitle = document.querySelector('.hero-title');
     if (heroTitle && config.personal?.name && config.personal?.title) {
-        heroTitle.innerHTML = `I'm <span class="highlight">${config.personal.name}</span><br>${config.personal.title}`;
+        const prefix = config.personal?.heroTitlePrefix || "I'm";
+        heroTitle.innerHTML = `${prefix} <span class="highlight">${config.personal.name}</span><br>${config.personal.title}`;
     }
 
     // Update profile image
@@ -733,7 +737,11 @@ if (typeof document !== 'undefined') {
 
 // Typing Animation for Hero Text and About Bio (Optimized)
 function initTypingAnimation() {
-    const typingSpeed = config.theme?.animations?.typingSpeed || 100;
+    const defaultTypingSpeed = config.theme?.animations?.typingSpeed || 100;
+    const greetingTypingSpeed = config.theme?.animations?.greetingTypingSpeed || defaultTypingSpeed;
+    const bioTypingSpeed = config.theme?.animations?.bioTypingSpeed || defaultTypingSpeed;
+    const greetingDelay = config.theme?.animations?.greetingTypingDelay || 500;
+    const bioDelay = config.theme?.animations?.bioTypingDelay || 1500;
 
     // Hero greeting typing animation
     if (config.personal?.greeting) {
@@ -747,14 +755,14 @@ function initTypingAnimation() {
                     greeting.textContent += originalText.charAt(i);
                     i++;
                     requestAnimationFrame(() => {
-                        setTimeout(typeWriter, typingSpeed);
+                        setTimeout(typeWriter, greetingTypingSpeed);
                     });
                 }
             };
 
             setTimeout(() => {
                 requestAnimationFrame(typeWriter);
-            }, 500);
+            }, greetingDelay);
         }
     }
 
@@ -770,7 +778,7 @@ function initTypingAnimation() {
                 aboutDescription.textContent += originalText.charAt(i);
                 i++;
                 requestAnimationFrame(() => {
-                    setTimeout(typeWriter, typingSpeed);
+                    setTimeout(typeWriter, bioTypingSpeed);
                 });
             }
         };
@@ -778,7 +786,7 @@ function initTypingAnimation() {
         // Start about bio typing after hero greeting completes (with delay)
         setTimeout(() => {
             requestAnimationFrame(typeWriter);
-        }, 1500);
+        }, bioDelay);
     }
 }
 

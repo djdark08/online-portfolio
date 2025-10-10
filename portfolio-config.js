@@ -32,16 +32,18 @@ const portfolioConfig = {
         }
     },
 
-    // Personal Information
+    // Personal Information - EDITABLE
     personal: {
         name: "Lloyd Agonia",
         title: "Robotics Engineer",
-        greeting: "Hello.",
+        pageTitle: "Lloyd Agonia - Portfolio", // Complete page title shown in browser tab
+        greeting: "Hello.", // This appears in the hero section with typing animation
         profileImage: "/images/profile.jpg",
         resumeLink: "#", // Add your resume link here
         email: "agonia.lloyd8@gmail.com",
-        bio: "I am a versatile tech professional with a strong background in software development, robotics, and network engineering.",
-        location: "Davao City, Philippines"
+        bio: "I am a versatile tech professional with a strong background in software development, robotics, and network engineering.", // This appears in the about section with typing animation
+        location: "Davao City, Philippines",
+        heroTitlePrefix: "I'm" // The prefix text before the name in hero section (e.g., "I'm [Name]")
     },
 
     // Navigation Menu - EDITABLE SECTIONS
@@ -284,10 +286,16 @@ const portfolioConfig = {
 
         animations: {
             enabled: true,
-            typingSpeed: 30, // milliseconds per character (faster)
-            counterDuration: 2000, // milliseconds
-            scrollSpeed: "30s", // for skills animation
-            parallaxEnabled: false // set to true for parallax effect
+            typingSpeed: 30, // default milliseconds per character for typing animations
+            greetingTypingSpeed: 250, // milliseconds per character for greeting animation
+            bioTypingSpeed: 10, // milliseconds per character for bio animation (slower)
+            counterDuration: 2000, // milliseconds for counter animations
+            scrollSpeed: "30s", // animation duration for scrolling skills
+            parallaxEnabled: false, // set to true for parallax effect
+            greetingTypingDelay: 500, // delay before greeting starts typing (ms)
+            bioTypingDelay: 1500, // delay before bio starts typing (ms)
+            fadeInDelay: 100, // delay between fade-in animations (ms)
+            scrollThrottle: 16 // throttle scroll events (ms)
         },
 
         performance: {
