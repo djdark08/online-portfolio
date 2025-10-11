@@ -1670,7 +1670,7 @@ function loadSavedTheme() {
     const themeSelect = document.getElementById('theme-select');
 
     // Default to dark theme if no theme is saved
-    const defaultTheme = savedTheme || 'dark';
+    const defaultTheme = savedTheme || 'cyberpunk';
 
     if (themeSelect) {
         themeSelect.value = defaultTheme;
