@@ -472,7 +472,7 @@ const portfolioConfig = {
             },
             {
                 name: "Ms. Taurine C. Auxilio",
-                title: "USTP Chairperson, IT",
+                title: "USTP Chairperson, MIT",
                 relationship: "Industry Mentor",
                 email: "neveltaurine.cuasito@ustp.edu.ph",
                 phone: "09778038587",
