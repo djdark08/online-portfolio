@@ -21,10 +21,22 @@ function populateFromConfig() {
         titleElement.textContent = `${config.personal.name} - ${config.personal.title}`;
     }
 
-    // Update navigation logo
+    // Update page logo in navigation
     const navLogo = document.getElementById('nav-logo');
-    if (navLogo && config.navigation?.logo) {
-        navLogo.textContent = config.navigation.logo;
+    if (navLogo) {
+        if (config.personal?.pageLogo) {
+            // Check if it's an emoji or image path
+            if (config.personal.pageLogo.startsWith('/') || config.personal.pageLogo.startsWith('http')) {
+                // It's an image path - create an img element
+                navLogo.innerHTML = `<img src="${config.personal.pageLogo}" alt="Logo" class="nav-logo-image">`;
+            } else {
+                // It's an emoji or text - use it directly
+                navLogo.textContent = config.personal.pageLogo;
+            }
+        } else if (config.navigation?.logo) {
+            // Fallback to navigation logo if pageLogo is not set
+            navLogo.textContent = config.navigation.logo;
+        }
     }
 
     // Populate navigation menu

@@ -37,6 +37,7 @@ const portfolioConfig = {
         name: "Lloyd Agonia",
         title: "Robotics Engineer",
         pageTitle: "Lloyd Agonia - Portfolio", // Complete page title shown in browser tab
+        pageLogo: "🤖", // Logo for the page - can be emoji or image path (e.g., "/images/logo.png")
         greeting: "Hello.", // This appears in the hero section with typing animation
         profileImage: "/images/profile.jpg",
         resumeLink: "#", // Add your resume link here
