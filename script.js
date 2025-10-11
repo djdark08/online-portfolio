@@ -21,6 +21,9 @@ function populateFromConfig() {
         titleElement.textContent = `${config.personal.name} - ${config.personal.title}`;
     }
 
+    // Update favicon based on pageLogo (will be called after config is loaded)
+    setTimeout(updateFavicon, 100);
+
     // Update page logo in navigation
     const navLogo = document.getElementById('nav-logo');
     if (navLogo) {
@@ -1698,5 +1701,37 @@ document.addEventListener('DOMContentLoaded', function() {
     // Also initialize video controls
     setTimeout(initVideoControls, 1000);
 });
+
+// Update favicon based on pageLogo configuration
+function updateFavicon() {
+    // Remove existing favicon links (except the first one we added)
+    const existingFavicons = document.querySelectorAll('link[rel="icon"]');
+    if (existingFavicons.length > 1) {
+        // Remove all except the first one (our default)
+        for (let i = existingFavicons.length - 1; i > 0; i--) {
+            existingFavicons[i].remove();
+        }
+    }
+
+    if (config.personal?.pageLogo) {
+        // Create new favicon based on pageLogo
+        const favicon = document.createElement('link');
+        favicon.rel = 'icon';
+
+        if (config.personal.pageLogo.startsWith('/') || config.personal.pageLogo.startsWith('http')) {
+            // It's an image path - use it as favicon
+            favicon.href = config.personal.pageLogo;
+            favicon.type = 'image/x-icon';
+        } else {
+            // It's an emoji - create SVG favicon
+            const emoji = config.personal.pageLogo;
+            const svgData = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${emoji}</text></svg>`;
+            favicon.href = `data:image/svg+xml,${encodeURIComponent(svgData)}`;
+            favicon.type = 'image/svg+xml';
+        }
+
+        document.head.appendChild(favicon);
+    }
+}
 
 // Clean, production-ready code - no testing exports needed

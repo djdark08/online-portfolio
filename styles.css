@@ -138,14 +138,18 @@ body {
 
 .nav-logo-image {
     height: 40px;
-    width: auto;
-    max-width: 150px;
-    border-radius: 8px;
-    transition: transform 0.3s ease;
+    width: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-color);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(255, 107, 97, 0.3);
 }
 
 .nav-logo-image:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
+    border-color: var(--accent-hover);
+    box-shadow: 0 4px 12px rgba(255, 107, 97, 0.5);
 }
 
 .nav-right {
