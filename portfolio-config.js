@@ -224,7 +224,7 @@ const portfolioConfig = {
     // Theme Configuration
     theme: {
         // Available theme modes: dark, light, cyberpunk, techno
-        mode: "cyberpunk",
+        mode: "dark",
 
         modes: {
             dark: {
