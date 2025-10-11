@@ -471,10 +471,10 @@ const portfolioConfig = {
                 image: "/images/docruvel.png"
             },
             {
-                name: "Engr. Taurine C. Auxilio",
+                name: "Ms. Taurine C. Auxilio",
                 title: "USTP Chairperson, IT",
                 relationship: "Industry Mentor",
-                email: "taurine.auxilio@university.edu",
+                email: "neveltaurine.cuasito@ustp.edu.ph",
                 phone: "09778038587",
                 image: "/images/mamtau.png"
             },
