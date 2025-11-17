@@ -35,7 +35,7 @@ const portfolioConfig = {
     // Personal Information - EDITABLE
     personal: {
         name: "Lloyd Agonia",
-        title: "Robotics Engineer",
+        title: "Robotics & AI Engineer",
         pageTitle: "Lloyd Agonia - Portfolio", // Complete page title shown in browser tab
         pageLogo: "/images/logo.jpg", // Logo for the page - can be emoji or image path (e.g., "/images/logo.png")
         greeting: "Hello.", // This appears in the hero section with typing animation
