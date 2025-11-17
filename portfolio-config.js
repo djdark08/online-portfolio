@@ -178,7 +178,7 @@ const portfolioConfig = {
     // Customize your professional description, services, and statistics here
     about: {
         title: "About me",
-        description: "I am a versatile tech professional with a strong background in software development, robotics, and network engineering. Proficient in Python and C, I have worked on various robotics projects, integrating IoT and programming microcontrollers to create innovative solutions. I excel at diagnosing and resolving computer system issues while adapting to diverse environments. My expertise includes cloud computing (AWS), Kubernetes for managing containerized applications, and configuring MikroTik devices. Additionally, I specialize in building and maintaining network servers to ensure security, efficiency, and scalability.",
+        description: "I am a versatile tech professional with a strong background in software development, robotics, and network engineering. With a BS in Electro-Mechanical Technology, major in Robotics and Mechatronics, I bring a solid academic foundation to my hands-on expertise. Proficient in Python and C, I have worked on various robotics projects, integrating IoT and programming microcontrollers to create innovative solutions. I excel at diagnosing and resolving computer system issues while adapting to diverse environments. My expertise includes cloud computing (AWS), Kubernetes for managing containerized applications, and configuring MikroTik devices. Additionally, I specialize in building and maintaining network servers to ensure security, efficiency, and scalability.",
         
         services: [
             {
