@@ -1,95 +1,43 @@
-// Portfolio Configuration File
 // =====================================================
-// EDITABLE PORTFOLIO CONFIGURATION
+// PORTFOLIO CONFIGURATION FILE
 // =====================================================
-// This file contains all the editable content for your portfolio website.
-// Simply modify the values below to customize your portfolio:
-//
-// 1. NAVIGATION: Add/remove menu items in the navigation section
-// 2. PERSONAL INFO: Update your name, title, bio, and contact details
-// 3. SECTIONS: Each major section is clearly marked as "EDITABLE"
-// 4. SKILLS: Add your technical skills and categorize them
-// 5. PROJECTS: Showcase your work and achievements
-// 6. EXPERIENCE: Add your professional background
-// 7. REFERENCES: Include professional recommendations
-// 8. CONTACT: Update your contact information and social links
-//
-// To disable any section, set "enabled: false"
-// To modify content, edit the text, URLs, and other properties
+// EDITABLE CONTENT FOR YOUR PORTFOLIO WEBSITE
+// Simply modify the values below to customize your portfolio
 // =====================================================
 
 const portfolioConfig = {
-    // Server Configuration
-    server: {
-        defaultPort: 6969,
-        preferredServer: "node", // "node" or "python"
-        autoOpenBrowser: true, // Automatically open browser when server starts
-        cacheControl: "no-cache", // Cache control for development
-        host: "localhost", // Server host (usually localhost)
-        errorPages: {
-            notFound: "/404.html",
-            maintenance: "/maintenance.html"
-        }
-    },
-
-        title: "Robotics & AI Engineer",
->>>>>>> 29a7d9a62cb847ab3691ec9c880cf708fc3fdb87
-        pageTitle: "Lloyd Enterina Agonia - Portfolio", // Complete page title shown in browser tab
     // Personal Information - EDITABLE
     personal: {
         name: "Lloyd Enterina Agonia",
         title: "Robotics & AI Engineer",
-        pageTitle: "Lloyd Enterina Agonia - Portfolio", // Complete page title shown in browser tab
-=======
-        title: "Robotics & AI Engineer",
->>>>>>> 29a7d9a62cb847ab3691ec9c880cf708fc3fdb87
-        pageTitle: "Lloyd Enterina Agonia - Portfolio", // Complete page title shown in browser tab
-        pageLogo: "/images/logo.jpg", // Logo for the page - can be emoji or image path (e.g., "/images/logo.png")
-        greeting: "Hello.", // This appears in the hero section with typing animation
+        pageTitle: "Lloyd Enterina Agonia - Portfolio",
+        pageLogo: "/images/logo.jpg",
+        greeting: "Hello.",
         profileImage: "/images/profile.jpg",
-        resumeLink: "#", // Add your resume link here
+        resumeLink: "#",
         email: "agonia.lloyd8@gmail.com",
-        bio: "I am a versatile tech professional with a strong background in software development, robotics, and network engineering.", // This appears in the about section with typing animation
+        bio: "I am a versatile tech professional with a strong background in software development, robotics, and network engineering.",
         location: "Davao City, Philippines",
-        heroTitlePrefix: "I'm" // The prefix text before the name in hero section (e.g., "I'm [Name]")
+        heroTitlePrefix: "I'm"
     },
 
-    // Navigation Menu - EDITABLE SECTIONS
-    // Add, remove, or modify menu items here. Each item needs a name and link.
-    // The link should match the ID of the section in index.html (e.g., #home, #about)
+    // Navigation Menu - EDITABLE
     navigation: {
         logo: "❖",
         menuItems: [
-            { name: "Home", link: "#home", enabled: true },
-            { name: "About Me", link: "#about", enabled: true },
-            { name: "Technical Skills", link: "#technical-skills", enabled: true },
-            { name: "Experiences", link: "#experience", enabled: true },
-            { name: "Gallery", link: "#projects", enabled: true },
-            { name: "References", link: "#references", enabled: true },
-            { name: "Contacts", link: "#contacts", enabled: true }
-            // To disable a section, set enabled: false
-            // To add a new section, add: { name: "Your Section", link: "#your-section-id", enabled: true }
+            { name: "Home", link: "#home" },
+            { name: "About Me", link: "#about" },
+            { name: "Technical Skills", link: "#technical-skills" },
+            { name: "Experiences", link: "#experience" },
+            { name: "Gallery", link: "#projects" },
+            { name: "References", link: "#references" },
+            { name: "Contacts", link: "#contacts" }
         ]
     },
 
-    // Hero Section Buttons (Disabled)
-    heroButtons: {
-        primary: {
-            text: "Got a project?",
-            link: "#",
-            enabled: false
-        },
-        secondary: {
-            text: "My resume",
-            link: "#",
-            enabled: false
-        }
-    },
-
     // Technical Skills Section - EDITABLE
-    // Add, remove, or modify skill categories and skills here
     technicalSkills: {
-        enabled: true, // Set to false to hide this section
+        enabled: true,
         title: "Technical Skills",
         subtitle: "A comprehensive overview of my technical expertise across multiple domains.",
         categories: [
@@ -151,42 +99,11 @@ const portfolioConfig = {
         ]
     },
 
-    // Skills Section (Legacy - keeping for backward compatibility)
-    skills: {
-        list: [
-            "Robotics",
-            "PLC",
-            "Arduino",
-            "Raspberry Pi",
-            "Python",
-            "C++",
-            "Java",
-            "MATLAB",
-            "Simulink",
-            "ROS",
-            "Webots",
-            "React",
-            "Git",
-            "Github",
-            "AutoCadd",
-            "Prometheus",
-            "Grafana",
-            "Webots",
-            "ROS",
-            "OpenCV",
-            "TensorFlow",
-            "PyTorch",
-            "LLM",
-        ],
-        animationSpeed: "30s" // Animation duration for scrolling
-    },
-
     // About Section - EDITABLE
-    // Customize your professional description, services, and statistics here
     about: {
         title: "About me",
         description: "I am a versatile tech professional with a strong background in software development, robotics, and network engineering. With a BS in Electro-Mechanical Technology, major in Robotics and Mechatronics, I bring a solid academic foundation to my hands-on expertise. Proficient in Python and C, I have worked on various robotics projects, integrating IoT and programming microcontrollers to create innovative solutions. I excel at diagnosing and resolving computer system issues while adapting to diverse environments. My expertise includes cloud computing (AWS), Kubernetes for managing containerized applications, and configuring MikroTik devices. Additionally, I specialize in building and maintaining network servers to ensure security, efficiency, and scalability.",
-        
+
         services: [
             {
                 icon: "🤖",
@@ -211,29 +128,15 @@ const portfolioConfig = {
         ],
 
         statistics: [
-            {
-                number: 16,
-                suffix: "+",
-                label: "Completed Projects"
-            },
-            {
-                number: 95,
-                suffix: "%",
-                label: "Client satisfaction"
-            },
-            {
-                number: 4,
-                suffix: "+",
-                label: "Years of experience"
-            }
+            { number: 16, suffix: "+", label: "Completed Projects" },
+            { number: 95, suffix: "%", label: "Client satisfaction" },
+            { number: 4, suffix: "+", label: "Years of experience" }
         ]
     },
 
     // Theme Configuration
     theme: {
-        // Available theme modes: dark, light, cyberpunk, techno
         mode: "dark",
-
         modes: {
             dark: {
                 name: "Dark Mode",
@@ -294,146 +197,87 @@ const portfolioConfig = {
 
         animations: {
             enabled: true,
-            typingSpeed: 30, // default milliseconds per character for typing animations
-            greetingTypingSpeed: 250, // milliseconds per character for greeting animation
-            bioTypingSpeed: 10, // milliseconds per character for bio animation (slower)
-            counterDuration: 2000, // milliseconds for counter animations
-            scrollSpeed: "30s", // animation duration for scrolling skills
-            parallaxEnabled: false, // set to true for parallax effect
-            greetingTypingDelay: 500, // delay before greeting starts typing (ms)
-            bioTypingDelay: 1500, // delay before bio starts typing (ms)
-            fadeInDelay: 100, // delay between fade-in animations (ms)
-            scrollThrottle: 16 // throttle scroll events (ms)
-        },
-
-        performance: {
-            throttleScroll: 16, // milliseconds
-            useHardwareAcceleration: true,
-            reduceMotion: false // respect user's motion preferences
+            typingSpeed: 30,
+            greetingTypingSpeed: 250,
+            bioTypingSpeed: 10,
+            counterDuration: 2000,
+            scrollSpeed: "30s",
+            parallaxEnabled: false,
+            greetingTypingDelay: 500,
+            bioTypingDelay: 1500,
+            fadeInDelay: 100,
+            scrollThrottle: 16
         }
     },
 
     // Projects Section - EDITABLE
-    // Add, remove, or modify your project portfolio here
     projects: {
-        enabled: true, // Set to false to hide this section
+        enabled: true,
         title: "Gallery",
         list: [
             {
-                name: "VoIP PBX and Network Server Setup(IT Topology and Infrastructure)",
-                description: "A comprehensive guide to setting up a VoIP PBX and network server infrastructure, including hardware and software configurations, network protocols, and security measures.",
+                name: "VoIP PBX and Network Server Setup",
+                description: "Comprehensive VoIP PBX and network infrastructure setup with security and monitoring.",
                 image: "/images/ServerDeploy.png",
-                link: "https://github.com/yourusername/ecommerce-platform",
-                technologies: ["Windows Server", "Linux Server", "Cisco ASA", "Cisco IOS", "Python", "Ansible", "Docker", "Kubernetes"],
+                link: "#",
+                technologies: ["Windows Server", "Linux Server", "Cisco ASA", "Python", "Docker", "Kubernetes"],
                 featured: true,
                 date: "Project"
             },
             {
                 name: "PLC Control System",
-                description: "A comprehensive industrial automation solution using programmable logic controllers for manufacturing process optimization. Features real-time monitoring, predictive maintenance, and automated quality control.",
+                description: "Industrial automation solution with PLC control for manufacturing optimization.",
                 image: "/images/PLC-operate.png",
-                link: "https://github.com/yourusername/plc-automation",
+                link: "#",
                 technologies: ["PLC", "SCADA", "Industrial IoT", "Python"],
                 featured: false,
                 date: "Project"
             },
             {
                 name: "3D Printer Farming System",
-                description: "A fully automated 3D printer farming system using Arduino and Raspberry Pi. Features automated printing, monitoring, and control systems.",
+                description: "Automated 3D printing farming system with monitoring and control.",
                 image: "/images/repair3dPrinter.png",
-                link: "https://github.com/yourusername/3d-printer-farming-system",
-                technologies: ["Arduino", "Raspberry Pi", "3D Printing", "CNC Milling", "Laser Cutting", "CNC Router"],
+                link: "#",
+                technologies: ["Arduino", "Raspberry Pi", "3D Printing"],
                 featured: false,
                 date: "Project"
             },
             {
-                name: "Teaching Robotics with VEX Robotics",
-                description: "Teaching robotics with VEX Robotics, a robotics education platform that provides interactive lessons and simulations for students.",
+                name: "Teaching Robotics with VEX",
+                description: "Robotics education platform with VEX Robotics integration.",
                 image: "/images/teach-robotics.png",
-                link: "https://github.com/yourusername/teaching-robotics",
+                link: "#",
                 technologies: ["VEX Robotics", "ROS", "Python", "C++"],
                 featured: false,
                 date: "Project"
             },
             {
-                name: "Design and build network monitoring systems",
-                description: "Network monitoring systems for network administrators and IT professionals, including hardware and software design, network protocols, and security measures.",
+                name: "Network Monitoring Systems",
+                description: "Comprehensive network monitoring solutions for administrators.",
                 image: "/images/network-monitoring.png",
-                link: "https://github.com/yourusername/network-monitoring",
-                technologies: ["Grafana", "Prometheus", "InfluxDB", "Python", "Ansible", "Docker", "Kubernetes"],
+                link: "#",
+                technologies: ["Grafana", "Prometheus", "Python", "Docker"],
                 featured: false,
                 date: "Project"
             },
             {
                 name: "R&D AI Algorithm",
-                description: "R&D AI Algorithm for autonomous vehicles, including hardware and software design, network protocols, and security measures.",
+                description: "Advanced AI algorithms for autonomous systems.",
                 image: "/images/r&d-ai.png",
-                link: "https://github.com/yourusername/network-monitoring",
-                technologies: ["LLM", "Python", "C++", "Raspberry Pi", "Arduino", "ROS", "OpenCV", "TensorFlow", "PyTorch"],
+                link: "#",
+                technologies: ["LLM", "Python", "C++", "Raspberry Pi", "ROS", "OpenCV", "TensorFlow"],
                 featured: false,
                 date: "Project"
-            },
-        ]
-    },
-
-    // Project Gallery Section
-    projectGallery: {
-        enabled: true,
-        title: "Project Gallery",
-        projects: [
-            {
-                type: "image",
-                src: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=400&fit=crop",
-                alt: "Autonomous Robot Navigation System",
-                title: "Autonomous Robot Navigation System",
-                description: "An advanced robotics project featuring autonomous navigation using computer vision and sensor fusion. The robot can detect obstacles, map its environment, and navigate complex spaces without human intervention.",
-                technologies: ["ROS", "OpenCV", "Python", "Raspberry Pi"],
-                githubLink: "https://github.com/djdark08/robot-navigation",
-                demoLink: "https://youtube.com/watch?v=dQw4w9WgXcQ"
-            },
-            {
-                type: "video",
-                src: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-                poster: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
-                title: "PLC Industrial Automation System",
-                description: "A comprehensive industrial automation solution using programmable logic controllers for manufacturing process optimization. Features real-time monitoring, predictive maintenance, and automated quality control.",
-                technologies: ["PLC", "SCADA", "Industrial IoT", "Python"],
-                githubLink: "https://github.com/djdark08/plc-automation",
-                demoLink: "https://youtube.com/watch?v=dQw4w9WgXcQ"
-            },
-            {
-                type: "image",
-                src: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&h=400&fit=crop",
-                alt: "Custom PCB Design and Assembly",
-                title: "Custom PCB Design and Assembly",
-                description: "Professional PCB design and assembly project featuring multi-layer boards, surface mount technology, and comprehensive testing procedures. Designed for high-reliability applications.",
-                technologies: ["Altium Designer", "SMT Assembly", "PCB Testing", "Electronics"],
-                githubLink: "https://github.com/djdark08/pcb-design",
-                demoLink: "https://youtube.com/watch?v=dQw4w9WgXcQ"
             }
         ]
     },
 
     // Video Links Section - EDITABLE
-    // Add, remove, or modify video links here. The system automatically adapts modal behavior
-    // based on device type (mobile/desktop) and video orientation (portrait/landscape).
+    // Modal behavior controlled by isPortrait property:
+    // true = Portrait modal (mobile/TikTok style), false = Landscape modal (desktop/YouTube style)
     videoLinks: {
-        enabled: true, // Set to false to hide this section
-        title: "Videos", // Section title
-
-        // VIDEO CONFIGURATION OPTIONS:
-        // platform: "youtube" or "tiktok" - The video platform
-        // videoId: The unique ID of the video from the platform URL
-        // thumbnail: Optional - Custom thumbnail URL (system uses platform default if not provided)
-        // isPortrait: BOOLEAN - Critical for modal behavior:
-        //   - true: Portrait/vertical video (9:16 ratio like mobile/reel content)
-        //   - false: Landscape/horizontal video (16:9 ratio like desktop movie content)
-        //
-        // MODAL BEHAVIOR:
-        // • isPortrait: true  → Always displays in vertical modal (mobile/TikTok style)
-        // • isPortrait: false → Always displays in horizontal modal (desktop/YouTube style)
-        // • Modal automatically adapts to device screen size and orientation
-        // • Desktop landscape = Theater mode, Mobile portrait = Full-screen vertical
+        enabled: true,
+        title: "Videos",
 
         videos: [
             // Landscape Videos (16:9 - Desktop/YouTube style)
@@ -442,69 +286,56 @@ const portfolioConfig = {
                 title: "Hexapod Robot Build with Arduino",
                 description: "Building and programming a hexapod robot using Arduino microcontroller with custom gait algorithms and sensor integration",
                 videoId: "8PpI4K6It7U",
-                thumbnail: "https://img.youtube.com/vi/8PpI4K6It7U/maxresdefault.jpg",
-                isPortrait: false // → Landscape modal (desktop theater style)
+                isPortrait: false
             },
             {
                 platform: "youtube",
                 title: "Facial Recognition AI with Python",
-                description: "Real-time facial recognition system using Python, OpenCV, and machine learning algorithms for accurate face detection and identification",
+                description: "Real-time facial recognition system using Python, OpenCV, and machine learning algorithms",
                 videoId: "RSFlfT5mHoE",
-                thumbnail: "https://img.youtube.com/vi/RSFlfT5mHoE/maxresdefault.jpg",
-                isPortrait: false // → Landscape modal (desktop theater style)
+                isPortrait: false
             },
             {
                 platform: "youtube",
                 title: "Human Detection AI using HOG Cascades",
-                description: "Advanced human detection system using Histogram of Oriented Gradients (HOG) cascades and computer vision techniques",
+                description: "Advanced human detection system using Histogram of Oriented Gradients (HOG) cascades",
                 videoId: "aITQ3wRgmTE",
-                thumbnail: "https://img.youtube.com/vi/aITQ3wRgmTE/maxresdefault.jpg",
-                isPortrait: false // → Landscape modal (desktop theater style)
+                isPortrait: false
             },
 
             // Portrait Videos (9:16 - Mobile/TikTok style)
             {
                 platform: "tiktok",
                 title: "Robotics R&D Project Demo",
-                description: "Demonstrating advanced robotics research and development project with innovative automation solutions",
+                description: "Demonstrating advanced robotics research and development project",
                 videoId: "7344258260507184389",
-                thumbnail: "https://www.tiktok.com/@grayagony/video/7344258260507184389?is_from_webapp=1&sender_device=pc&web_id=7555855229960013320",
-                isPortrait: true // → Portrait modal (vertical/fullscreen on mobile)
+                isPortrait: true
             },
             {
                 platform: "tiktok",
                 title: "Dancing Servos using Arduino",
-                description: "Creative servo motor choreography project demonstrating precise Arduino control and timing algorithms",
+                description: "Creative servo motor choreography with Arduino control",
                 videoId: "7312649776233729286",
-                thumbnail: "https://www.tiktok.com/@grayagony/video/7312649776233729286?is_from_webapp=1&sender_device=pc&web_id=7555855229960013320",
-                isPortrait: true // → Portrait modal (vertical/fullscreen on mobile)
+                isPortrait: true
             },
             {
                 platform: "tiktok",
                 title: "Hexapod Robot Calibration",
-                description: "Precise hexapod robot calibration process using advanced kinematics and sensor integration techniques",
+                description: "Precise hexapod robot calibration process",
                 videoId: "7193904203901734171",
-                thumbnail: "https://www.tiktok.com/@grayagony/video/7193904203901734171?is_from_webapp=1&sender_device=pc&web_id=7555855229960013320",
-                isPortrait: true // → Portrait modal (vertical/fullscreen on mobile)
+                isPortrait: true
             }
-
-            // To add more videos:
-            // 1. Copy a template above
-            // 2. Get videoId from YouTube/TikTok URL
-            // 3. Set isPortrait: true for mobile/reel content, false for desktop/movie content
-            // 4. Add custom thumbnail (optional)
         ]
     },
 
     // Character References Section - EDITABLE
-    // Add, remove, or modify your professional references here
     references: {
-        enabled: true, // Set to false to hide this section
+        enabled: true,
         title: "Character References",
         list: [
             {
-                name: "Dr. Ruvel J. Cuasito Sr.  PhD.",
-                title: "USTP COT DEAN, CIT ",
+                name: "Dr. Ruvel J. Cuasito Sr. PhD.",
+                title: "USTP COT DEAN, CIT",
                 relationship: "Dean & Research Advisor",
                 email: "ruvel.cuasito@university.edu",
                 phone: "09171307793",
@@ -538,36 +369,34 @@ const portfolioConfig = {
     },
 
     // Experience Section - EDITABLE
-    // Add, remove, or modify your professional experience positions here
     experience: {
-        enabled: true, // Set to false to hide this section
+        enabled: true,
         title: "Experiences",
         positions: [
             {
                 title: "Programmer Consultant",
                 company: "Freelance",
                 period: "06/2021 - 03/2024",
-                description: "In my role as a Programmer Consultant, I developed a facial detection algorithm utilizing Haar cascade techniques in Python. I tailored a unique cascade algorithm to meet specific client requirements, ensuring optimal performance for their application. Additionally, I created a program that was successfully integrated into a microcontroller, enhancing its functionality and enabling efficient real-time processing of facial recognition tasks. This experience allowed me to refine my skills in algorithm development and embedded systems, contributing to innovative solutions for my clients."
+                description: "Developed facial detection algorithms and microcontroller integration for client applications."
             },
             {
                 title: "Local Internet Service Provider",
                 company: "Self-Employed",
                 period: "04/2019 - 02/2023",
-                description: "During the COVID pandemic, I launched a small business as a Local Internet Service Provider, which provided me with invaluable exposure to networking and cybersecurity. In this role, I designed my own network topology and constructed a server to host various services, enabling me to offer reliable internet access to my clients. This hands-on experience was crucial in developing my technical skills and understanding of networking principles. The challenges I encountered while managing the business laid a strong foundation for my expertise in the field, allowing me to cultivate a deep understanding of network infrastructure and security protocols."
+                description: "Built and managed network infrastructure and server hosting services during the COVID pandemic."
             },
             {
                 title: "Network Specialist Consultant",
                 company: "Contract-Based",
                 period: "02/2023 - 06/2023",
-                description: "As a contract-based Network Specialist Consultant, I provided comprehensive networking solutions for my client. I was responsible for designing their network topology and firewall architecture, ensuring robust security measures and optimal performance. My work involved assessing their existing infrastructure and implementing a tailored solution that addressed their specific needs. Additionally, I optimized their load balancing systems to enhance traffic management, ensuring efficient resource allocation and minimizing latency. This role allowed me to leverage my expertise in network design and security, contributing to a more resilient and efficient network environment for my client."
+                description: "Designed network topologies, firewall architecture, and optimized load balancing systems."
             }
         ]
     },
 
     // Contact Section - EDITABLE
-    // Update your contact information and social media links here
     contacts: {
-        enabled: true, // Set to false to hide this section
+        enabled: true,
         title: "Contact Information",
         email: "agonia.lloyd8@gmail.com",
         phone: "+63-9606250319",
@@ -579,13 +408,6 @@ const portfolioConfig = {
         }
     }
 };
-
-// Function to update the portfolio with new config
-function updatePortfolio() {
-    // This function can be called to refresh the portfolio with new settings
-    console.log("Portfolio configuration loaded:", portfolioConfig);
-    return portfolioConfig;
-}
 
 // Export for use in other files
 if (typeof module !== 'undefined' && module.exports) {
