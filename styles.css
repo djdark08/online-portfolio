@@ -2366,12 +2366,566 @@ body.modal-open {
     animation: modalFadeIn 0.3s ease-out;
 }
 
+/* ===== TIKTOK PHONE MOCKUP STYLES ===== */
+
+/* Phone Container */
+.tiktok-phone-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Phone Mockup */
+.phone-mockup {
+    position: relative;
+    width: 320px;
+    height: 640px;
+    margin: 0 auto;
+    background: linear-gradient(145deg, #000000, #1a1a1a);
+    border-radius: 35px;
+    padding: 20px;
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.8),
+        inset 0 0 0 3px #000,
+        inset 0 0 0 10px #111;
+    overflow: hidden;
+}
+
+/* Phone Screen */
+.phone-screen {
+    width: 100%;
+    height: 100%;
+    background: #0a0a0a;
+    border-radius: 25px;
+    padding: 50px 20px 20px 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Phone Notch */
+.phone-notch {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 25px;
+    background: linear-gradient(145deg, #000000, #1a1a1a);
+    border-radius: 15px;
+    box-shadow: inset 0 0 0 2px #333;
+}
+
+/* Phone Status Bar */
+.phone-status-bar {
+    position: absolute;
+    top: 25px;
+    left: 20px;
+    right: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 500;
+    z-index: 20;
+}
+
+.phone-time {
+    color: #fff;
+    font-weight: 500;
+}
+
+.phone-network {
+    color: #fff;
+    opacity: 0.8;
+}
+
+.phone-battery {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    color: #fff;
+}
+
+.battery-icon {
+    width: 18px;
+    height: 8px;
+    border: 2px solid #fff;
+    border-radius: 2px;
+    position: relative;
+    background: #fff;
+}
+
+.battery-icon::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 3px;
+    background: #fff;
+    border-radius: 0 1px 1px 0;
+}
+
+/* TikTok App Header */
+.tiktok-app-header {
+    position: absolute;
+    top: 55px;
+    left: 20px;
+    right: 20px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 15;
+}
+
+.tiktok-logo {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.tiktok-camera-btn {
+    width: 35px;
+    height: 35px;
+    background: #000;
+    border: 1px solid #444;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+/* TikTok Video Scroll Container */
+.tiktok-video-scroll {
+    position: absolute;
+    top: 95px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(100% - 95px);
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* TikTok Video Items */
+.tiktok-video-item {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+}
+
+/* Active video indicator */
+.tiktok-video-item.active .tiktok-overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* TikTok Video Container */
+.tiktok-video-container {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* TikTok Video Iframe */
+.tiktok-video-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #000;
+}
+
+/* TikTok Overlay (Play Button & Info) */
+.tiktok-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 80px; /* Leave space for actions */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(transparent 60%, rgba(0, 0, 0, 0.6));
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    pointer-events: all;
+    z-index: 10;
+    padding: 2rem;
+}
+
+.tiktok-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* TikTok Play Button */
+.tiktok-play-btn {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.tiktok-play-btn:hover {
+    background: #ffffff;
+    transform: scale(1.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* TikTok Video Info */
+.tiktok-video-info {
+    text-align: center;
+    color: #ffffff;
+    max-width: 250px;
+    width: 100%;
+}
+
+.tiktok-video-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.tiktok-video-description {
+    font-size: 14px;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
+/* TikTok Actions (Like, Comment, Share) */
+.tiktok-actions {
+    position: absolute;
+    right: 15px;
+    bottom: 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 20;
+}
+
+.action-btn {
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+.action-icon {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
+
+/* Like animation */
+.like-btn.liked .action-icon {
+    animation: heartBounce 0.6s ease;
+}
+
+@keyframes heartBounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+/* Action labels (optional - commented out for cleaner look) */
+/*
+.action-btn::after {
+    content: attr(title);
+    position: absolute;
+    right: 55px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.3rem 0.6rem;
+    border-radius: 10px;
+    font-size: 12px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.action-btn:hover::after {
+    opacity: 1;
+}
+*/
+
+/* Scroll Indicator */
+.tiktok-scroll-indicator {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: opacity 0.5s ease;
+    z-index: 21;
+}
+
+/* Phone Instructions */
+.phone-instructions {
+    margin-top: 1rem;
+    text-align: center;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.phone-instructions p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0.5rem 0;
+}
+
+/* ===== YOUTUBE VIDEO CARDS (Regular Cards) ===== */
+
+.youtube-video-card {
+    background-color: var(--bg-color);
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.youtube-video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.youtube-video-content {
+    padding: 1.5rem;
+}
+
+.youtube-video-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.youtube-video-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* ===== RESPONSIVE DESIGN FOR PHONE MOCKUP ===== */
+
+/* Tablet Styles */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .phone-mockup {
+        width: 280px;
+        height: 560px;
+    }
+
+    .tiktok-phone-container {
+        max-width: 350px;
+    }
+}
+
+/* Mobile Styles */
+@media (max-width: 767px) {
+    .phone-mockup {
+        width: 85vw;
+        max-width: 300px;
+        height: calc(85vw * 2);
+        max-height: 600px;
+    }
+
+    .tiktok-phone-container {
+        max-width: 100%;
+        padding: 0 1rem;
+    }
+
+    .phone-instructions {
+        padding: 0 1rem;
+    }
+
+    .phone-instructions p {
+        font-size: 13px;
+    }
+
+    .tiktok-app-header {
+        top: 45px;
+        height: 35px;
+    }
+
+    .tiktok-logo {
+        font-size: 16px;
+    }
+
+    .tiktok-camera-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    .phone-status-bar {
+        top: 20px;
+        font-size: 11px;
+    }
+
+    .tiktok-video-scroll {
+        top: 80px;
+        height: calc(100% - 80px);
+    }
+}
+
+/* Very Small Mobile */
+@media (max-width: 480px) {
+    .phone-mockup {
+        width: 90vw;
+        height: calc(90vw * 2.1);
+        padding: 15px;
+    }
+
+    .phone-screen {
+        padding: 40px 15px 15px 15px;
+    }
+
+    .tiktok-app-header {
+        top: 40px;
+    }
+
+    .tiktok-actions {
+        right: 12px;
+        bottom: 100px;
+    }
+
+    .action-btn {
+        width: 45px;
+        height: 45px;
+    }
+
+    .action-icon {
+        font-size: 18px;
+    }
+
+    .tiktok-play-btn {
+        width: 70px;
+        height: 70px;
+        font-size: 20px;
+    }
+
+    .tiktok-video-info {
+        max-width: 200px;
+    }
+
+    .tiktok-video-title {
+        font-size: 14px;
+    }
+
+    .tiktok-video-description {
+        font-size: 12px;
+    }
+}
+
+/* ===== LIKE ANIMATION ===== */
+
+@keyframes likePopup {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* ===== CUSTOM SCROLLBAR FOR PHONE SCROLL ===== */
+
+.tiktok-video-scroll::-webkit-scrollbar {
+    width: 0px;
+}
+
+.tiktok-video-scroll {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* ===== PHONE REFLECTIONS/SHADOWS ===== */
+
+.phone-mockup::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    border-radius: 25px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.phone-screen::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+}
+
 /* Print Styles */
 @media print {
     .navbar,
     .hero-buttons,
     .video-custom-controls,
-    .video-modal {
+    .video-modal,
+    .tiktok-phone-container {
         display: none !important;
     }
 }

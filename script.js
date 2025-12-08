@@ -1261,7 +1261,7 @@ function populateProjectGallery() {
     initTimelineGallery();
 }
 
-// Populate video links from configuration
+// Populate video links from configuration - Phone interface for TikTok, cards for YouTube
 function populateVideoLinks() {
     if (!config.videoLinks?.enabled) return;
 
@@ -1270,48 +1270,278 @@ function populateVideoLinks() {
 
     videoLinksGrid.innerHTML = '';
 
-    config.videoLinks.videos.forEach((video, index) => {
-        const videoCard = document.createElement('div');
-        videoCard.className = 'video-link-card';
+    // Separate TikTok and YouTube videos
+    const tiktokVideos = config.videoLinks.videos.filter(video => video.platform === 'tiktok');
+    const youtubeVideos = config.videoLinks.videos.filter(video => video.platform === 'youtube');
 
-        const iframeId = `video-${index + 1}`;
+    // Create TikTok phone interface if there are TikTok videos
+    if (tiktokVideos.length > 0) {
+        const phoneContainer = document.createElement('div');
+        phoneContainer.className = 'tiktok-phone-container';
 
-        // Get thumbnail URL based on platform
-        let thumbnailUrl = video.thumbnail || '';
-        if (!thumbnailUrl && video.platform === 'youtube') {
-            thumbnailUrl = `https://img.youtube.com/vi/${video.videoId}/maxresdefault.jpg`;
-        }
-
-        videoCard.innerHTML = `
-            <div class="video-container">
-                <iframe
-                    id="${iframeId}"
-                    class="video-iframe"
-                    src=""
-                    title="${video.title}"
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen>
-                </iframe>
-                <div class="video-overlay">
-                    <button class="video-play-btn" onclick="loadVideo('${video.platform}', '${video.videoId}', '${iframeId}')">
-                        <span class="play-icon">▶</span>
-                        <span class="platform-badge">${video.platform === 'youtube' ? 'YouTube' : 'TikTok'}</span>
-                    </button>
+        phoneContainer.innerHTML = `
+            <div class="phone-mockup">
+                <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <div class="phone-status-bar">
+                        <div class="phone-time">9:41</div>
+                        <div class="phone-network">5G</div>
+                        <div class="phone-battery">
+                            <span>100%</span>
+                            <div class="battery-icon"></div>
+                        </div>
+                    </div>
+                    <div class="tiktok-app-header">
+                        <div class="tiktok-logo">TikTok</div>
+                        <div class="tiktok-camera-btn">📹</div>
+                    </div>
+                    <div class="tiktok-video-scroll">
+                        ${tiktokVideos.map((video, index) => `
+                            <div class="tiktok-video-item ${index === 0 ? 'active' : ''}" data-video-index="${index}">
+                                <div class="tiktok-video-container">
+                                    <iframe
+                                        id="tiktok-video-${index}"
+                                        class="tiktok-video-iframe"
+                                        src=""
+                                        title="${video.title}"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen>
+                                    </iframe>
+                                </div>
+                                <div class="tiktok-overlay ${index === 0 ? '' : 'hidden'}">
+                                    <button class="tiktok-play-btn" onclick="playTikTokVideo(${index})">
+                                        <span class="play-icon">▶</span>
+                                    </button>
+                                    <div class="tiktok-video-info">
+                                        <h4 class="tiktok-video-title">${video.title}</h4>
+                                        <p class="tiktok-video-description">${video.description}</p>
+                                    </div>
+                                </div>
+                                <div class="tiktok-actions">
+                                    <div class="action-btn like-btn" onclick="toggleLike(${index})">
+                                        <span class="action-icon">🤍</span>
+                                    </div>
+                                    <div class="action-btn comment-btn">
+                                        <span class="action-icon">💬</span>
+                                    </div>
+                                    <div class="action-btn share-btn">
+                                        <span class="action-icon">📤</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
                 </div>
-                ${thumbnailUrl ? `<img class="video-thumbnail" src="${thumbnailUrl}" alt="${video.title}" loading="lazy" onerror="this.style.display='none'">` : ''}
             </div>
-            <div class="video-content">
-                <h3 class="video-title">${video.title}</h3>
-                <p class="video-description">${video.description}</p>
+            <div class="phone-instructions">
+                <p>🎯 <strong>Interactive Phone Demo:</strong> Scroll inside the phone to browse through TikTok videos!</p>
+                <p>👆 Click videos to play them full-screen on the "phone screen"</p>
             </div>
         `;
 
-        videoLinksGrid.appendChild(videoCard);
-    });
+        videoLinksGrid.appendChild(phoneContainer);
 
-    // Initialize video hover previews
+        // Initialize TikTok phone scrolling
+        initTikTokPhoneScroll();
+    }
+
+    // Create YouTube video cards (traditional cards)
+    if (youtubeVideos.length > 0) {
+        youtubeVideos.forEach((video, originalIndex) => {
+            const videoCard = document.createElement('div');
+            videoCard.className = 'youtube-video-card';
+
+            // Adjust index for TikTok videos already loaded
+            const iframeId = `youtube-video-${tiktokVideos.length + originalIndex}`;
+
+            // Get thumbnail URL for YouTube
+            let thumbnailUrl = video.thumbnail || '';
+            if (!thumbnailUrl && video.platform === 'youtube') {
+                thumbnailUrl = `https://img.youtube.com/vi/${video.videoId}/maxresdefault.jpg`;
+            }
+
+            videoCard.innerHTML = `
+                <div class="video-container">
+                    <iframe
+                        id="${iframeId}"
+                        class="video-iframe"
+                        src=""
+                        title="${video.title}"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                    <div class="video-overlay">
+                        <button class="video-play-btn" onclick="loadVideo('${video.platform}', '${video.videoId}', '${iframeId}')">
+                            <span class="play-icon">▶</span>
+                            <span class="platform-badge">${video.platform === 'youtube' ? 'YouTube' : 'TikTok'}</span>
+                        </button>
+                    </div>
+                    ${thumbnailUrl ? `<img class="video-thumbnail" src="${thumbnailUrl}" alt="${video.title}" loading="lazy" onerror="this.style.display='none'">` : ''}
+                </div>
+                <div class="youtube-video-content">
+                    <h3 class="youtube-video-title">${video.title}</h3>
+                    <p class="youtube-video-description">${video.description}</p>
+                </div>
+            `;
+
+            videoLinksGrid.appendChild(videoCard);
+        });
+    }
+
+    // Initialize video hover previews for YouTube videos
     initVideoPreviews();
+}
+
+// Initialize TikTok phone scrolling functionality
+function initTikTokPhoneScroll() {
+    const tiktokScroll = document.querySelector('.tiktok-video-scroll');
+    if (!tiktokScroll) return;
+
+    let currentVideoIndex = 0;
+    const maxScrollHeight = tiktokScroll.scrollHeight - tiktokScroll.clientHeight;
+
+    // Auto-play videos based on scroll position
+    const updateActiveVideo = () => {
+        const scrollTop = tiktokScroll.scrollTop;
+        const videoItems = tiktokScroll.querySelectorAll('.tiktok-video-item');
+        const videoHeight = tiktokScroll.clientHeight;
+
+        // Find which video should be active based on scroll position
+        const newActiveIndex = Math.min(
+            Math.floor(scrollTop / videoHeight + 0.5),
+            videoItems.length - 1
+        );
+
+        if (newActiveIndex !== currentVideoIndex) {
+            // Remove active class from previous
+            videoItems[currentVideoIndex].classList.remove('active');
+            videoItems[currentVideoIndex].querySelector('.tiktok-overlay').classList.add('hidden');
+
+            // Add active class to new
+            currentVideoIndex = newActiveIndex;
+            videoItems[currentVideoIndex].classList.add('active');
+            videoItems[currentVideoIndex].querySelector('.tiktok-overlay').classList.remove('hidden');
+        }
+    };
+
+    // Listen for scroll events
+    tiktokScroll.addEventListener('scroll', updateActiveVideo);
+
+    // Initialize first video as active
+    updateActiveVideo();
+
+    // Smooth scrolling behavior for better UX
+    tiktokScroll.style.scrollBehavior = 'smooth';
+
+    // Handle wheel events for better control
+    tiktokScroll.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const deltaY = e.deltaY;
+        const videoItems = tiktokScroll.querySelectorAll('.tiktok-video-item');
+        const videoHeight = tiktokScroll.clientHeight;
+
+        let newScrollTop = tiktokScroll.scrollTop + deltaY;
+
+        // Snap to video boundaries
+        const currentIndex = Math.round(tiktokScroll.scrollTop / videoHeight);
+        if (deltaY > 0) {
+            // Scrolling down - go to next video
+            newScrollTop = Math.min((currentIndex + 1) * videoHeight, maxScrollHeight);
+        } else {
+            // Scrolling up - go to previous video
+            newScrollTop = Math.max((currentIndex - 1) * videoHeight, 0);
+        }
+
+        tiktokScroll.scrollTop = newScrollTop;
+    }, { passive: false });
+
+    // Touch/swiping for mobile devices
+    let touchStartY = 0;
+    let touchCurrentY = 0;
+
+    tiktokScroll.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+    }, { passive: false });
+
+    tiktokScroll.addEventListener('touchmove', (e) => {
+        if (touchStartY === 0) return;
+
+        touchCurrentY = e.touches[0].clientY;
+        const deltaY = touchStartY - touchCurrentY;
+
+        if (Math.abs(deltaY) > 30) { // Minimum swipe distance
+            const videoItems = tiktokScroll.querySelectorAll('.tiktok-video-item');
+            const videoHeight = tiktokScroll.clientHeight;
+
+            let targetIndex = currentVideoIndex;
+            if (deltaY > 0) {
+                // Swipe up (next video)
+                targetIndex = Math.min(currentVideoIndex + 1, videoItems.length - 1);
+            } else {
+                // Swipe down (previous video)
+                targetIndex = Math.max(currentVideoIndex - 1, 0);
+            }
+
+            const targetScrollTop = targetIndex * videoHeight;
+            tiktokScroll.scrollTop = targetScrollTop;
+
+            touchStartY = touchCurrentY; // Reset for continuous swiping
+        }
+    }, { passive: false });
+
+    tiktokScroll.addEventListener('touchend', () => {
+        touchStartY = 0;
+        touchCurrentY = 0;
+    }, { passive: false });
+
+    // Add visible scroll indicators
+    const scrollIndicator = document.createElement('div');
+    scrollIndicator.className = 'tiktok-scroll-indicator';
+    scrollIndicator.innerHTML = '⬆️ Get Latest Content<br>⬇️ See More Videos';
+    tiktokScroll.parentElement.appendChild(scrollIndicator);
+
+    // Auto-hide scroll indicator after 3 seconds
+    setTimeout(() => {
+        scrollIndicator.style.opacity = '0';
+        setTimeout(() => {
+            scrollIndicator.remove();
+        }, 500);
+    }, 3000);
+}
+
+// Play TikTok video in modal when tapped/clicked
+function playTikTokVideo(index) {
+    // Get all TikTok videos from config
+    if (!config.videoLinks?.videos) return;
+
+    const tiktokVideos = config.videoLinks.videos.filter(video => video.platform === 'tiktok');
+    const video = tiktokVideos[index];
+
+    if (video) {
+        // Open the video in the existing modal system
+        openVideoModal(video);
+    }
+}
+
+// Toggle like animation on TikTok videos
+function toggleLike(index) {
+    const likeBtn = document.querySelector(`.tiktok-video-item[data-video-index="${index}"] .like-btn .action-icon`);
+
+    if (likeBtn) {
+        const currentIcon = likeBtn.textContent;
+        if (currentIcon === '🤍') {
+            likeBtn.textContent = '❤️';
+            // Add popup animation
+            likeBtn.style.animation = 'likePopup 0.6s ease';
+            setTimeout(() => {
+                likeBtn.style.animation = '';
+            }, 600);
+        } else {
+            likeBtn.textContent = '🤍';
+        }
+    }
 }
 
 // Timeline Gallery functionality
