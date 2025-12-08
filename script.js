@@ -1491,9 +1491,13 @@ function initTikTokPhoneScroll() {
 
     tiktokScroll.addEventListener('scroll', handleScroll, { passive: true });
 
-    // Initialize first video
+    // Initialize first video - force auto-play for first video
     setTimeout(() => {
         updateVideoPlayback();
+        // Ensure first video starts playing automatically
+        if (videoItems.length > 0 && currentVideoIndex === 0) {
+            playTikTokVideo(0);
+        }
     }, 500);
 
     // Smooth scrolling behavior
