@@ -414,18 +414,36 @@ const portfolioConfig = {
         ]
     },
 
-    // Video Links Section
+    // Video Links Section - EDITABLE
+    // Add, remove, or modify video links here. The system automatically adapts modal behavior
+    // based on device type (mobile/desktop) and video orientation (portrait/landscape).
     videoLinks: {
-        enabled: true,
-        title: "Videos",
+        enabled: true, // Set to false to hide this section
+        title: "Videos", // Section title
+
+        // VIDEO CONFIGURATION OPTIONS:
+        // platform: "youtube" or "tiktok" - The video platform
+        // videoId: The unique ID of the video from the platform URL
+        // thumbnail: Optional - Custom thumbnail URL (system uses platform default if not provided)
+        // isPortrait: BOOLEAN - Critical for modal behavior:
+        //   - true: Portrait/vertical video (9:16 ratio like mobile/reel content)
+        //   - false: Landscape/horizontal video (16:9 ratio like desktop movie content)
+        //
+        // MODAL BEHAVIOR:
+        // • isPortrait: true  → Always displays in vertical modal (mobile/TikTok style)
+        // • isPortrait: false → Always displays in horizontal modal (desktop/YouTube style)
+        // • Modal automatically adapts to device screen size and orientation
+        // • Desktop landscape = Theater mode, Mobile portrait = Full-screen vertical
+
         videos: [
+            // Landscape Videos (16:9 - Desktop/YouTube style)
             {
                 platform: "youtube",
                 title: "Hexapod Robot Build with Arduino",
                 description: "Building and programming a hexapod robot using Arduino microcontroller with custom gait algorithms and sensor integration",
                 videoId: "8PpI4K6It7U",
                 thumbnail: "https://img.youtube.com/vi/8PpI4K6It7U/maxresdefault.jpg",
-                isPortrait: false // Landscape/Horizontal video for desktop
+                isPortrait: false // → Landscape modal (desktop theater style)
             },
             {
                 platform: "youtube",
@@ -433,7 +451,7 @@ const portfolioConfig = {
                 description: "Real-time facial recognition system using Python, OpenCV, and machine learning algorithms for accurate face detection and identification",
                 videoId: "RSFlfT5mHoE",
                 thumbnail: "https://img.youtube.com/vi/RSFlfT5mHoE/maxresdefault.jpg",
-                isPortrait: false // Landscape/Horizontal video for desktop
+                isPortrait: false // → Landscape modal (desktop theater style)
             },
             {
                 platform: "youtube",
@@ -441,15 +459,17 @@ const portfolioConfig = {
                 description: "Advanced human detection system using Histogram of Oriented Gradients (HOG) cascades and computer vision techniques",
                 videoId: "aITQ3wRgmTE",
                 thumbnail: "https://img.youtube.com/vi/aITQ3wRgmTE/maxresdefault.jpg",
-                isPortrait: false // Landscape/Horizontal video for desktop
+                isPortrait: false // → Landscape modal (desktop theater style)
             },
+
+            // Portrait Videos (9:16 - Mobile/TikTok style)
             {
                 platform: "tiktok",
                 title: "Robotics R&D Project Demo",
                 description: "Demonstrating advanced robotics research and development project with innovative automation solutions",
                 videoId: "7344258260507184389",
                 thumbnail: "https://www.tiktok.com/@grayagony/video/7344258260507184389?is_from_webapp=1&sender_device=pc&web_id=7555855229960013320",
-                isPortrait: true // Portrait/Vertical video like mobile TikTok
+                isPortrait: true // → Portrait modal (vertical/fullscreen on mobile)
             },
             {
                 platform: "tiktok",
@@ -457,7 +477,7 @@ const portfolioConfig = {
                 description: "Creative servo motor choreography project demonstrating precise Arduino control and timing algorithms",
                 videoId: "7312649776233729286",
                 thumbnail: "https://www.tiktok.com/@grayagony/video/7312649776233729286?is_from_webapp=1&sender_device=pc&web_id=7555855229960013320",
-                isPortrait: true // Portrait/Vertical video like mobile TikTok
+                isPortrait: true // → Portrait modal (vertical/fullscreen on mobile)
             },
             {
                 platform: "tiktok",
@@ -465,8 +485,14 @@ const portfolioConfig = {
                 description: "Precise hexapod robot calibration process using advanced kinematics and sensor integration techniques",
                 videoId: "7193904203901734171",
                 thumbnail: "https://www.tiktok.com/@grayagony/video/7193904203901734171?is_from_webapp=1&sender_device=pc&web_id=7555855229960013320",
-                isPortrait: true // Portrait/Vertical video like mobile TikTok
+                isPortrait: true // → Portrait modal (vertical/fullscreen on mobile)
             }
+
+            // To add more videos:
+            // 1. Copy a template above
+            // 2. Get videoId from YouTube/TikTok URL
+            // 3. Set isPortrait: true for mobile/reel content, false for desktop/movie content
+            // 4. Add custom thumbnail (optional)
         ]
     },
 
