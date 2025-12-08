@@ -1336,10 +1336,7 @@ function populateVideoLinks() {
                     </div>
                 </div>
             </div>
-            <div class="phone-instructions">
-                <p>🎯 <strong>Interactive Phone Demo:</strong> Scroll inside the phone to browse through TikTok videos!</p>
-                <p>👆 Click videos to play them full-screen on the "phone screen"</p>
-            </div>
+
         `;
 
         // Initialize TikTok phone scrolling
@@ -1458,9 +1455,19 @@ function initTikTokPhoneScroll() {
             // Start playing the video
             const tiktokVideos = config.videoLinks.videos.filter(video => video.platform === 'tiktok');
             if (tiktokVideos[index]) {
-                // Set iframe source to start playing
-                const embedUrl = `https://www.tiktok.com/embed/${tiktokVideos[index].videoId}`;
+                // Try TikTok embed with v2 URL format
+                const videoId = tiktokVideos[index].videoId;
+                const embedUrl = `https://www.tiktok.com/embed/v2/${videoId}`;
                 iframe.src = embedUrl;
+                iframe.onload = () => {
+                    console.log(`TikTok iframe loaded successfully for video: ${videoId}`);
+                    // Hide overlay after loading
+                    overlay.style.opacity = '0';
+                    overlay.style.pointerEvents = 'none';
+                };
+                iframe.onerror = () => {
+                    console.error(`Failed to load TikTok video: ${videoId}`);
+                };
                 console.log(`Loading TikTok video: ${embedUrl}`);
             }
         }
@@ -1492,13 +1499,11 @@ function initTikTokPhoneScroll() {
 
     tiktokScroll.addEventListener('scroll', handleScroll, { passive: true });
 
-    // Initialize first video - force auto-play for first video
+    // Initialize first video but don't auto-play (浏览器安全策略阻止自动播放)
     setTimeout(() => {
         updateVideoPlayback();
-        // Ensure first video starts playing automatically
-        if (videoItems.length > 0 && currentVideoIndex === 0) {
-            playTikTokVideo(0);
-        }
+        // Note: 自动播放被浏览器策略阻止，用户需要点击播放按钮
+        console.log('TikTok 视频已初始化，但不会自动播放（浏览器安全策略）');
     }, 500);
 
     // Smooth scrolling behavior
@@ -1599,8 +1604,8 @@ function playTikTokVideo(index) {
     const video = tiktokVideos[index];
 
     if (video) {
-        // Open the video in the existing modal system
-        openVideoModal(video);
+        // Open TikTok video in new tab since embedding doesn't work reliably
+        window.open(`https://tiktok.com/@${video.username || 'user'}/video/${video.videoId}`, '_blank');
     }
 }
 
