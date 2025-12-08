@@ -1321,39 +1321,33 @@ function populateVideoLinks() {
     // Only handle YouTube videos now (TikTok phone moved to Gallery section)
     const youtubeVideos = config.videoLinks.videos.filter(video => video.platform === 'youtube');
 
-    // Create YouTube video cards (traditional cards)
+    // Create YouTube video cards (embedded videos with modal)
     if (youtubeVideos.length > 0) {
         youtubeVideos.forEach((video, originalIndex) => {
             const videoCard = document.createElement('div');
             videoCard.className = 'youtube-video-card';
 
-            // Adjust index for TikTok videos already loaded
-            const iframeId = `youtube-video-${tiktokVideos.length + originalIndex}`;
-
-            // Get thumbnail URL for YouTube
-            let thumbnailUrl = video.thumbnail || '';
-            if (!thumbnailUrl && video.platform === 'youtube') {
-                thumbnailUrl = `https://img.youtube.com/vi/${video.videoId}/maxresdefault.jpg`;
-            }
+            // Generate unique iframe ID for each video tile
+            const tileIframeId = `youtube-tile-${originalIndex}`;
 
             videoCard.innerHTML = `
                 <div class="video-container">
                     <iframe
-                        id="${iframeId}"
+                        id="${tileIframeId}"
                         class="video-iframe"
-                        src=""
+                        src="https://www.youtube.com/embed/${video.videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${video.videoId}&modestbranding=1"
                         title="${video.title}"
                         frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen>
                     </iframe>
-                    <div class="video-overlay">
-                        <button class="video-play-btn" onclick="loadVideo('${video.platform}', '${video.videoId}', '${iframeId}')">
+                    <!-- Modal overlay -->
+                    <div class="video-overlay" onclick="openYouTubeModal('${video.title}', '${video.description}', '${video.videoId}')">
+                        <button class="video-play-btn">
                             <span class="play-icon">▶</span>
-                            <span class="platform-badge">${video.platform === 'youtube' ? 'YouTube' : 'TikTok'}</span>
+                            <span class="platform-badge">Watch Full Video</span>
                         </button>
                     </div>
-                    ${thumbnailUrl ? `<img class="video-thumbnail" src="${thumbnailUrl}" alt="${video.title}" loading="lazy" onerror="this.style.display='none'">` : ''}
                 </div>
                 <div class="youtube-video-content">
                     <h3 class="youtube-video-title">${video.title}</h3>
@@ -1927,6 +1921,61 @@ function openVideoModal(video) {
     setTimeout(() => {
         modal.focus();
     }, 100);
+}
+
+// YouTube modal functionality
+function openYouTubeModal(title, description, videoId) {
+    // Create modal if it doesn't exist
+    if (!document.getElementById('youtube-modal')) {
+        const modalHTML = `
+            <div id="youtube-modal" class="video-modal youtube-only-modal">
+                <div class="video-modal-backdrop" onclick="closeYouTubeModal()"></div>
+                <div class="video-modal-content">
+                    <button class="video-modal-close" onclick="closeYouTubeModal()">✕</button>
+                    <div class="video-modal-iframe-container">
+                        <iframe id="youtube-modal-iframe" class="video-modal-iframe"
+                                frameborder="0" allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-modal-info">
+                        <h3 id="youtube-modal-title"></h3>
+                        <p id="youtube-modal-description"></p>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+
+    // Show modal
+    const modal = document.getElementById('youtube-modal');
+    const iframe = document.getElementById('youtube-modal-iframe');
+    const modalTitle = document.getElementById('youtube-modal-title');
+    const modalDesc = document.getElementById('youtube-modal-description');
+
+    // Set content
+    modalTitle.textContent = title;
+    modalDesc.textContent = description;
+
+    // Load YouTube video with controls enabled
+    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&controls=1&modestbranding=0&enablejsapi=1&origin=${window.location.origin}`;
+
+    // Show modal
+    modal.classList.add('active');
+    document.body.classList.add('modal-open');
+}
+
+function closeYouTubeModal() {
+    const modal = document.getElementById('youtube-modal');
+    const iframe = document.getElementById('youtube-modal-iframe');
+
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.classList.remove('modal-open');
+        if (iframe) {
+            iframe.src = '';
+        }
+    }
 }
 
 // Initialize video controls when DOM is loaded
