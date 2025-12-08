@@ -1366,7 +1366,7 @@ function populateVideoLinks() {
     }
 
     // Initialize video hover previews for YouTube videos
-    initVideoPreviews();
+    initVideoPreviews(youtubeVideos);
 }
 
 // Initialize TikTok phone scrolling functionality with auto-play
@@ -1768,7 +1768,7 @@ function seekVideo(event, progressContainer) {
 }
 
 // Video preview functionality with modal popups
-function initVideoPreviews() {
+function initVideoPreviews(youtubeVideos) {
     const videoCards = document.querySelectorAll('.video-link-card');
 
     videoCards.forEach(card => {
@@ -1799,8 +1799,8 @@ function initVideoPreviews() {
                 e.stopPropagation();
 
                 const cardIndex = Array.from(document.querySelectorAll('.video-link-card')).indexOf(card);
-                if (typeof config !== 'undefined' && config.videoLinks?.videos?.[cardIndex]) {
-                    openVideoModal(config.videoLinks.videos[cardIndex]);
+                if (youtubeVideos && youtubeVideos[cardIndex]) {
+                    openVideoModal(youtubeVideos[cardIndex]);
                 }
             });
         }

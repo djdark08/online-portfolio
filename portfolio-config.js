@@ -284,35 +284,35 @@ const portfolioConfig = {
             {
                 platform: "youtube",
                 title: "Data Entry System",
-                description: "A data entry system built with Python for the backend and HTML, CSS, and JavaScript for the frontend enables efficient data capture, storage, and management, enhancing accuracy and productivity.",
+                description: "Full-stack web application with Python backend, HTML/CSS/JS frontend. Streamlines data management with secure, user-friendly interface.",
                 videoId: "1GtONU2KWS0",
                 isPortrait: false
             },
             {
                 platform: "youtube",
                 title: "3D Printer Assembly",
-                description: "3D printer assembly involves building a 3D printer from individual components, aligning mechanical parts, wiring electronics, and calibrating systems for accurate printing. This process typically includes assembling the frame, installing the extruder and hotend, connecting motors and sensors, and configuring software. Proper assembly ensures reliable performance and high-quality prints.",
+                description: "Complete end-to-end 3D printer build from scratch. Mechanical assembly, electronics integration, and software calibration tutorial.",
                 videoId: "8lbMTotptBU",
                 isPortrait: false
             },
             {
                 platform: "youtube",
                 title: "Hexapod Robot Build with Arduino",
-                description: "Building and programming a hexapod robot using Arduino microcontroller with custom gait algorithms and sensor integration",
+                description: "Six-legged autonomous robot construction. Arduino microcontroller integration with custom gait algorithms and sensor feedback.",
                 videoId: "8PpI4K6It7U",
                 isPortrait: false
             },
             {
                 platform: "youtube",
                 title: "Facial Recognition AI with Python",
-                description: "Real-time facial recognition system using Python, OpenCV, and machine learning algorithms",
+                description: "Computer vision project using OpenCV and Python. Real-time facial detection and recognition system with machine learning.",
                 videoId: "RSFlfT5mHoE",
                 isPortrait: false
             },
             {
                 platform: "youtube",
                 title: "Human Detection AI using HOG Cascades",
-                description: "Advanced human detection system using Histogram of Oriented Gradients (HOG) cascades",
+                description: "Advanced computer vision algorithm for pedestrian detection using Histogram of Oriented Gradients and cascade classifiers.",
                 videoId: "aITQ3wRgmTE",
                 isPortrait: false
             },

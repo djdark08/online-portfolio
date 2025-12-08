@@ -1188,6 +1188,7 @@ body:not(.loaded) * {
     overflow: hidden;
     border-radius: 15px;
     background: var(--card-bg);
+    margin-bottom: 15px; /* Space between video and content */
 }
 
 .video-iframe {
