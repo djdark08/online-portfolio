@@ -32,10 +32,17 @@ const portfolioConfig = {
         }
     },
 
+        title: "Robotics & AI Engineer",
+>>>>>>> 29a7d9a62cb847ab3691ec9c880cf708fc3fdb87
+        pageTitle: "Lloyd Enterina Agonia - Portfolio", // Complete page title shown in browser tab
     // Personal Information - EDITABLE
     personal: {
         name: "Lloyd Enterina Agonia",
-        title: "Robotics Engineer",
+        title: "Robotics & AI Engineer",
+        pageTitle: "Lloyd Enterina Agonia - Portfolio", // Complete page title shown in browser tab
+=======
+        title: "Robotics & AI Engineer",
+>>>>>>> 29a7d9a62cb847ab3691ec9c880cf708fc3fdb87
         pageTitle: "Lloyd Enterina Agonia - Portfolio", // Complete page title shown in browser tab
         pageLogo: "/images/logo.jpg", // Logo for the page - can be emoji or image path (e.g., "/images/logo.png")
         greeting: "Hello.", // This appears in the hero section with typing animation
