@@ -1406,20 +1406,25 @@ function initTikTokPhoneScroll() {
     const videoItems = tiktokScroll.querySelectorAll('.tiktok-video-item');
     const maxScrollHeight = tiktokScroll.scrollHeight - tiktokScroll.clientHeight;
 
-    // User interaction handler for enabling auto-play
-    const enableAutoPlay = () => {
-        userHasInteracted = true;
-        console.log('User interacted, enabling TikTok-style auto-play');
-        // Remove the listener after first interaction
-        ['touchstart', 'click', 'scroll', 'wheel'].forEach(event => {
-            document.removeEventListener(event, enableAutoPlay, { passive: true });
-        });
+    // Auto-enable auto-play when phone comes into viewport (TikTok-style behavior)
+    const observerOptions = {
+        threshold: 0.5, // When 50% of phone is visible
+        rootMargin: '0px 0px -100px 0px'
     };
 
-    // Add user interaction listeners
-    ['touchstart', 'click', 'scroll', 'wheel'].forEach(event => {
-        document.addEventListener(event, enableAutoPlay, { passive: true });
-    });
+    const phoneObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !userHasInteracted) {
+                userHasInteracted = true;
+                console.log('Phone UI now visible - starting TikTok auto-play! 🔥');
+                playTikTokVideo(currentVideoIndex); // Auto-start first video
+                phoneObserver.disconnect(); // Stop observing after first activation
+            }
+        });
+    }, observerOptions);
+
+    // Start observing the phone element
+    phoneObserver.observe(tiktokScroll);
 
     // Auto-play/pause videos based on visibility
     const updateVideoPlayback = () => {
