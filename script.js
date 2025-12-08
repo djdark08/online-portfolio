@@ -1459,8 +1459,9 @@ function initTikTokPhoneScroll() {
             const tiktokVideos = config.videoLinks.videos.filter(video => video.platform === 'tiktok');
             if (tiktokVideos[index]) {
                 // Set iframe source to start playing
-                const embedUrl = `https://www.tiktok.com/embed/v2/${tiktokVideos[index].videoId}`;
+                const embedUrl = `https://www.tiktok.com/embed/${tiktokVideos[index].videoId}`;
                 iframe.src = embedUrl;
+                console.log(`Loading TikTok video: ${embedUrl}`);
             }
         }
     };
