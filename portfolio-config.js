@@ -283,6 +283,20 @@ const portfolioConfig = {
             // Landscape Videos (16:9 - Desktop/YouTube style)
             {
                 platform: "youtube",
+                title: "Data Entry System",
+                description: "A data entry system built with Python for the backend and HTML, CSS, and JavaScript for the frontend enables efficient data capture, storage, and management, enhancing accuracy and productivity.",
+                videoId: "1GtONU2KWS0",
+                isPortrait: false
+            },
+            {
+                platform: "youtube",
+                title: "3D Printer Assembly",
+                description: "3D printer assembly involves building a 3D printer from individual components, aligning mechanical parts, wiring electronics, and calibrating systems for accurate printing. This process typically includes assembling the frame, installing the extruder and hotend, connecting motors and sensors, and configuring software. Proper assembly ensures reliable performance and high-quality prints.",
+                videoId: "8lbMTotptBU",
+                isPortrait: false
+            },
+            {
+                platform: "youtube",
                 title: "Hexapod Robot Build with Arduino",
                 description: "Building and programming a hexapod robot using Arduino microcontroller with custom gait algorithms and sensor integration",
                 videoId: "8PpI4K6It7U",
