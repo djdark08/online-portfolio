@@ -2370,11 +2370,17 @@ body.modal-open {
     animation: modalFadeIn 0.3s ease-out;
 }
 
-/* ===== iPHONE 17 PRO MAX MOCKUP STYLES ===== */
+/* ===== RESPONSIVE iPHONE 17 PRO MAX MOCKUP STYLES ===== */
 
 .iphone-container {
-    width: 395px;
-    height: 857px;
+    /* Responsive sizing: scales with viewport */
+    width: min(90vw, 425px);
+    height: min(102vh, 900px);
+    max-width: 425px;
+    max-height: 900px;
+    /* Center the phone */
+    margin: 20px auto;
+    /* Phone styling */
     background: linear-gradient(145deg,
         #1a1a1a 0%,
         #0a0a0a 25%,
@@ -2382,13 +2388,12 @@ body.modal-open {
         #2a2a2a 75%,
         #1a1a1a 100%);
     border-radius: 50px;
-    padding: 12px;
+    padding: clamp(8px, 2.5vw, 15px);
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 30px auto 50px auto;
     box-shadow:
         0 25px 50px rgba(0, 0, 0, 0.8),
         0 0 0 1px rgba(255, 255, 255, 0.05),
@@ -2398,6 +2403,12 @@ body.modal-open {
    	background-image:
    		radial-gradient(at 30% 30%, rgba(200, 200, 220, 0.1) 0%, transparent 50%),
    		radial-gradient(at 70% 70%, rgba(180, 190, 210, 0.08) 0%, transparent 50%);
+    /* Ensure crisp rendering */
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+
+    /* Animate phone responsiveness */
+    transition: all 0.3s ease;
 }
 
 /* Dynamic Island - iPhone 17 Pro Max */
