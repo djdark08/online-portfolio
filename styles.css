@@ -647,6 +647,9 @@ body {
     line-height: 1.8;
     color: var(--text-secondary);
     margin-bottom: 3rem;
+    overflow: visible; /* Ensure all text is visible */
+    word-wrap: break-word; /* Prevent text overflow */
+    hyphens: auto; /* Better text wrapping */
 }
 
 .services {
@@ -1428,8 +1431,9 @@ body:not(.loaded) * {
 
 .references-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, 300px);
     gap: 2rem;
+    justify-content: center;
 }
 
 .reference-card {
@@ -2364,6 +2368,92 @@ body.modal-open {
 
 .video-modal.active .video-modal-content {
     animation: modalFadeIn 0.3s ease-out;
+}
+
+/* ===== iPHONE MOCKUP STYLES ===== */
+
+.iphone-container {
+    width: 360px;
+    height: 640px;
+    background: linear-gradient(145deg, #1a1a1a, #000);
+    border-radius: 50px;
+    padding: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 50px auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.iphone-notch {
+    width: 140px;
+    height: 30px;
+    background: black;
+    border-radius: 20px;
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.2);
+    z-index: 2;
+}
+
+.iphone-screen {
+    width: 100%;
+    height: 100%;
+    background: black;
+    border-radius: 45px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.scrollable-videos {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.scrollable-videos::-webkit-scrollbar {
+    display: none;
+}
+
+.video-container {
+    width: 100%;
+    height: 100%;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: black;
+    position: relative;
+}
+
+.video-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.iphone-buttons {
+    position: absolute;
+    right: -8px;
+    top: 120px;
+    width: 6px;
+    height: 50px;
+    background: linear-gradient(90deg, #444, #222);
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 /* ===== TIKTOK PHONE MOCKUP STYLES ===== */
