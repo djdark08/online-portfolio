@@ -1296,6 +1296,8 @@ function populateVideoLinks() {
                         <div class="tiktok-camera-btn">📹</div>
                     </div>
                     <div class="tiktok-video-scroll">
+                        <!-- iPhone Home Indicator -->
+                        <div class="phone-home-indicator"></div>
                         ${tiktokVideos.map((video, index) => `
                             <div class="tiktok-video-item ${index === 0 ? 'active' : ''}" data-video-index="${index}">
                                 <div class="tiktok-video-container">
@@ -1394,121 +1396,193 @@ function populateVideoLinks() {
     initVideoPreviews();
 }
 
-// Initialize TikTok phone scrolling functionality
+// Initialize TikTok phone scrolling functionality with auto-play
 function initTikTokPhoneScroll() {
     const tiktokScroll = document.querySelector('.tiktok-video-scroll');
     if (!tiktokScroll) return;
 
     let currentVideoIndex = 0;
+    let isAutoScrolling = false;
+    let scrollTimeout;
+    const videoItems = tiktokScroll.querySelectorAll('.tiktok-video-item');
     const maxScrollHeight = tiktokScroll.scrollHeight - tiktokScroll.clientHeight;
 
-    // Auto-play videos based on scroll position
-    const updateActiveVideo = () => {
+    // Auto-play/pause videos based on visibility
+    const updateVideoPlayback = () => {
         const scrollTop = tiktokScroll.scrollTop;
-        const videoItems = tiktokScroll.querySelectorAll('.tiktok-video-item');
         const videoHeight = tiktokScroll.clientHeight;
 
-        // Find which video should be active based on scroll position
+        // Find which video is most visible (center of viewport)
+        const centerPoint = scrollTop + (videoHeight / 2);
         const newActiveIndex = Math.min(
-            Math.floor(scrollTop / videoHeight + 0.5),
+            Math.floor(centerPoint / videoHeight),
             videoItems.length - 1
         );
 
         if (newActiveIndex !== currentVideoIndex) {
-            // Remove active class from previous
-            videoItems[currentVideoIndex].classList.remove('active');
-            videoItems[currentVideoIndex].querySelector('.tiktok-overlay').classList.add('hidden');
+            // Pause previous video
+            stopTikTokVideo(currentVideoIndex);
 
-            // Add active class to new
+            // Activate new video
             currentVideoIndex = newActiveIndex;
-            videoItems[currentVideoIndex].classList.add('active');
-            videoItems[currentVideoIndex].querySelector('.tiktok-overlay').classList.remove('hidden');
+
+            // Start playing the new active video
+            playTikTokVideo(currentVideoIndex);
+
+            // Update overlay visibility
+            videoItems.forEach((item, index) => {
+                if (index === currentVideoIndex) {
+                    item.classList.add('active');
+                    item.querySelector('.tiktok-overlay').classList.remove('hidden');
+                } else {
+                    item.classList.remove('active');
+                    item.querySelector('.tiktok-overlay').classList.add('hidden');
+                }
+            });
         }
     };
 
-    // Listen for scroll events
-    tiktokScroll.addEventListener('scroll', updateActiveVideo);
+    // Play TikTok video automatically
+    const playTikTokVideo = (index) => {
+        const videoItem = videoItems[index];
+        if (!videoItem) return;
 
-    // Initialize first video as active
-    updateActiveVideo();
+        const iframe = videoItem.querySelector('.tiktok-video-iframe');
+        const overlay = videoItem.querySelector('.tiktok-overlay');
 
-    // Smooth scrolling behavior for better UX
+        if (iframe && overlay) {
+            // Hide overlay and start video
+            overlay.style.opacity = '0';
+            overlay.style.pointerEvents = 'none';
+
+            // Start playing the video
+            const tiktokVideos = config.videoLinks.videos.filter(video => video.platform === 'tiktok');
+            if (tiktokVideos[index]) {
+                // Set iframe source to start playing
+                const embedUrl = `https://www.tiktok.com/embed/v2/${tiktokVideos[index].videoId}`;
+                iframe.src = embedUrl;
+            }
+        }
+    };
+
+    // Stop/pause TikTok video
+    const stopTikTokVideo = (index) => {
+        const videoItem = videoItems[index];
+        if (!videoItem) return;
+
+        const iframe = videoItem.querySelector('.tiktok-video-iframe');
+        const overlay = videoItem.querySelector('.tiktok-overlay');
+
+        if (iframe && overlay) {
+            // Show overlay and stop video
+            overlay.style.opacity = '1';
+            overlay.style.pointerEvents = 'auto';
+
+            // Clear iframe source to stop video
+            iframe.src = '';
+        }
+    };
+
+    // Handle scroll events with debounce for better performance
+    const handleScroll = () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(updateVideoPlayback, 100);
+    };
+
+    tiktokScroll.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Initialize first video
+    setTimeout(() => {
+        updateVideoPlayback();
+    }, 500);
+
+    // Smooth scrolling behavior
     tiktokScroll.style.scrollBehavior = 'smooth';
 
-    // Handle wheel events for better control
+    // Enhanced wheel scrolling with snap-to-video
     tiktokScroll.addEventListener('wheel', (e) => {
+        if (isAutoScrolling) return;
+
         e.preventDefault();
         const deltaY = e.deltaY;
-        const videoItems = tiktokScroll.querySelectorAll('.tiktok-video-item');
         const videoHeight = tiktokScroll.clientHeight;
 
-        let newScrollTop = tiktokScroll.scrollTop + deltaY;
+        if (Math.abs(deltaY) > 10) { // Minimum wheel movement
+            const direction = deltaY > 0 ? 1 : -1;
+            const targetIndex = Math.max(0, Math.min(currentVideoIndex + direction, videoItems.length - 1));
+            const targetScrollTop = targetIndex * videoHeight;
 
-        // Snap to video boundaries
-        const currentIndex = Math.round(tiktokScroll.scrollTop / videoHeight);
-        if (deltaY > 0) {
-            // Scrolling down - go to next video
-            newScrollTop = Math.min((currentIndex + 1) * videoHeight, maxScrollHeight);
-        } else {
-            // Scrolling up - go to previous video
-            newScrollTop = Math.max((currentIndex - 1) * videoHeight, 0);
+            isAutoScrolling = true;
+            tiktokScroll.scrollTo({
+                top: targetScrollTop,
+                behavior: 'smooth'
+            });
+
+            // Reset auto-scroll flag after animation
+            setTimeout(() => {
+                isAutoScrolling = false;
+            }, 300);
         }
-
-        tiktokScroll.scrollTop = newScrollTop;
     }, { passive: false });
 
-    // Touch/swiping for mobile devices
+    // Touch/swiping for mobile devices with auto-play
     let touchStartY = 0;
-    let touchCurrentY = 0;
+    let touchStartTime = 0;
 
     tiktokScroll.addEventListener('touchstart', (e) => {
         touchStartY = e.touches[0].clientY;
+        touchStartTime = Date.now();
+        isAutoScrolling = false;
     }, { passive: false });
 
     tiktokScroll.addEventListener('touchmove', (e) => {
-        if (touchStartY === 0) return;
+        if (touchStartY === 0 || isAutoScrolling) return;
 
-        touchCurrentY = e.touches[0].clientY;
+        const touchCurrentY = e.touches[0].clientY;
         const deltaY = touchStartY - touchCurrentY;
 
-        if (Math.abs(deltaY) > 30) { // Minimum swipe distance
-            const videoItems = tiktokScroll.querySelectorAll('.tiktok-video-item');
-            const videoHeight = tiktokScroll.clientHeight;
+        // Fast swipe detection
+        const touchDuration = Date.now() - touchStartTime;
+        const velocity = Math.abs(deltaY) / touchDuration;
 
-            let targetIndex = currentVideoIndex;
-            if (deltaY > 0) {
-                // Swipe up (next video)
-                targetIndex = Math.min(currentVideoIndex + 1, videoItems.length - 1);
-            } else {
-                // Swipe down (previous video)
-                targetIndex = Math.max(currentVideoIndex - 1, 0);
-            }
-
+        if (Math.abs(deltaY) > 30 || velocity > 0.5) {
+            isAutoScrolling = true;
+            const direction = deltaY > 0 ? 1 : -1;
+            const targetIndex = Math.max(0, Math.min(currentVideoIndex + direction, videoItems.length - 1));
             const targetScrollTop = targetIndex * videoHeight;
-            tiktokScroll.scrollTop = targetScrollTop;
 
-            touchStartY = touchCurrentY; // Reset for continuous swiping
+            tiktokScroll.scrollTo({
+                top: targetScrollTop,
+                behavior: 'smooth'
+            });
+
+            // Reset touch tracking
+            touchStartY = touchCurrentY;
+            touchStartTime = Date.now();
         }
     }, { passive: false });
 
     tiktokScroll.addEventListener('touchend', () => {
         touchStartY = 0;
-        touchCurrentY = 0;
+        touchStartTime = 0;
+        setTimeout(() => {
+            isAutoScrolling = false;
+        }, 300);
     }, { passive: false });
 
-    // Add visible scroll indicators
+    // Add iPhone-style scroll indicator
     const scrollIndicator = document.createElement('div');
     scrollIndicator.className = 'tiktok-scroll-indicator';
-    scrollIndicator.innerHTML = '⬆️ Get Latest Content<br>⬇️ See More Videos';
+    scrollIndicator.innerHTML = '😍 <strong>Scroll to Auto-Play Videos</strong> 😍<br>✨ Just like real TikTok!';
     tiktokScroll.parentElement.appendChild(scrollIndicator);
 
-    // Auto-hide scroll indicator after 3 seconds
+    // Auto-hide scroll indicator after 4 seconds
     setTimeout(() => {
         scrollIndicator.style.opacity = '0';
         setTimeout(() => {
             scrollIndicator.remove();
-        }, 500);
-    }, 3000);
+        }, 1000);
+    }, 4000);
 }
 
 // Play TikTok video in modal when tapped/clicked
