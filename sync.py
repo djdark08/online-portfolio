@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simple GitHub Sync Script - Old Method
+Simple GitHub Sync Script
 Pulls latest changes from GitHub repository to local
 """
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simple GitHub Update Script - Old Method
+Simple GitHub Update Script - Old
 Pushes local changes to GitHub repository
 """
 
@@ -21,7 +21,7 @@ def main():
     run_command("git add .")
 
     print("💾 Committing...")
-    run_command('git commit -m "Update portfolio"')
+    run_command('git commit -m "Update Portfolio"')
 
     print("🚀 Pushing to GitHub...")
     result = run_command("git push origin main")
