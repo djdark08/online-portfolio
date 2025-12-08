@@ -1692,22 +1692,24 @@ function openVideoModal(video) {
     title.textContent = video.title || '';
     description.textContent = video.description || '';
 
-    // Determine device type and video orientation
+    // Determine video orientation - TikTok videos ALWAYS get portrait modal regardless of device
     const isPortraitVideo = video.isPortrait || false;
     const isMobile = window.innerWidth <= 768;
 
-    // Determine appropriate modal classes based on VIDEO ORIENTATION (primary) and device (secondary)
+    // Determine appropriate modal classes
     let modalClasses = ['video-modal'];
 
     if (isPortraitVideo) {
-        // Portrait content (TikTok videos) - Always use portrait modal orientation
+        // TikTok videos (portrait content) - ALWAYS use portrait modal orientation for both mobile and desktop
+        modalClasses.push('portrait-video');
         if (isMobile) {
-            modalClasses.push('portrait-video', 'portrait-mobile');
+            modalClasses.push('portrait-mobile');
         } else {
-            modalClasses.push('portrait-video', 'portrait-desktop');
+            // Force TikTok to always use mobile portrait styling even on desktop
+            modalClasses.push('portrait-mobile');
         }
     } else {
-        // Landscape content (YouTube videos) - Always use landscape modal orientation
+        // YouTube videos (landscape content) - Use normal modal behavior
         if (isMobile) {
             modalClasses.push('landscape-video', 'landscape-mobile');
         } else {
@@ -1717,7 +1719,7 @@ function openVideoModal(video) {
 
     // Apply modal classes
     modal.className = modalClasses.join(' ');
-    console.log('Modal classes applied:', modalClasses, 'Video orientation:', isPortraitVideo, 'Mobile:', isMobile);
+    console.log('Modal classes applied:', modalClasses, 'Video platform:', video.platform, 'isPortrait:', isPortraitVideo);
 
     // Set iframe source based on platform with modal-specific parameters
     let embedUrl = '';
