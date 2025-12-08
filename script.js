@@ -1720,6 +1720,7 @@ function openVideoModal(video) {
 
     // Apply modal classes
     modal.className = modalClasses.join(' ');
+    console.log('Modal classes applied:', modalClasses, 'Video orientation:', isPortraitVideo, 'Mobile:', isMobile);
 
     // Set iframe source based on platform with modal-specific parameters
     let embedUrl = '';
