@@ -1285,11 +1285,11 @@ function populateVideoLinks() {
                     <div class="phone-notch"></div>
                     <div class="phone-status-bar">
                         <div class="phone-time">9:41</div>
-                        <div class="phone-network">5G</div>
                         <div class="phone-battery">
                             <span>100%</span>
                             <div class="battery-icon"></div>
                         </div>
+                        <div class="phone-network">5G</div>
                     </div>
                     <div class="tiktok-app-header">
                         <div class="tiktok-logo">TikTok</div>
@@ -1401,11 +1401,30 @@ function initTikTokPhoneScroll() {
     let currentVideoIndex = 0;
     let isAutoScrolling = false;
     let scrollTimeout;
+    let userHasInteracted = false; // Track user interaction for auto-play
+    let videoElements = {};
     const videoItems = tiktokScroll.querySelectorAll('.tiktok-video-item');
     const maxScrollHeight = tiktokScroll.scrollHeight - tiktokScroll.clientHeight;
 
+    // User interaction handler for enabling auto-play
+    const enableAutoPlay = () => {
+        userHasInteracted = true;
+        console.log('User interacted, enabling TikTok-style auto-play');
+        // Remove the listener after first interaction
+        ['touchstart', 'click', 'scroll', 'wheel'].forEach(event => {
+            document.removeEventListener(event, enableAutoPlay, { passive: true });
+        });
+    };
+
+    // Add user interaction listeners
+    ['touchstart', 'click', 'scroll', 'wheel'].forEach(event => {
+        document.addEventListener(event, enableAutoPlay, { passive: true });
+    });
+
     // Auto-play/pause videos based on visibility
     const updateVideoPlayback = () => {
+        if (!userHasInteracted) return; // Wait for user interaction
+
         const scrollTop = tiktokScroll.scrollTop;
         const videoHeight = tiktokScroll.clientHeight;
 
@@ -1423,23 +1442,23 @@ function initTikTokPhoneScroll() {
             // Activate new video
             currentVideoIndex = newActiveIndex;
 
-            // Start playing the new active video
+            // Start playing the new active video (TikTok-style auto-play)
             playTikTokVideo(currentVideoIndex);
 
             // Update overlay visibility
             videoItems.forEach((item, index) => {
                 if (index === currentVideoIndex) {
                     item.classList.add('active');
-                    item.querySelector('.tiktok-overlay').classList.remove('hidden');
+                    item.querySelector('.tiktok-overlay').classList.add('hidden');
                 } else {
                     item.classList.remove('active');
-                    item.querySelector('.tiktok-overlay').classList.add('hidden');
+                    item.querySelector('.tiktok-overlay').classList.remove('hidden');
                 }
             });
         }
     };
 
-    // Play TikTok video automatically
+    // Play TikTok video in TikTok-style (embedded in phone)
     const playTikTokVideo = (index) => {
         const videoItem = videoItems[index];
         if (!videoItem) return;
@@ -1455,20 +1474,21 @@ function initTikTokPhoneScroll() {
             // Start playing the video
             const tiktokVideos = config.videoLinks.videos.filter(video => video.platform === 'tiktok');
             if (tiktokVideos[index]) {
-                // Try TikTok embed with v2 URL format
+                // Try TikTok embed with working URL format
                 const videoId = tiktokVideos[index].videoId;
-                const embedUrl = `https://www.tiktok.com/embed/v2/${videoId}`;
-                iframe.src = embedUrl;
-                iframe.onload = () => {
-                    console.log(`TikTok iframe loaded successfully for video: ${videoId}`);
-                    // Hide overlay after loading
-                    overlay.style.opacity = '0';
-                    overlay.style.pointerEvents = 'none';
-                };
-                iframe.onerror = () => {
-                    console.error(`Failed to load TikTok video: ${videoId}`);
-                };
-                console.log(`Loading TikTok video: ${embedUrl}`);
+                const username = tiktokVideos[index].username || 'user';
+
+                // Use the most reliable TikTok embed format
+                const embedUrl = `https://www.tiktok.com/embed/${videoId}`;
+
+                if (!videoElements[index]) {
+                    iframe.src = embedUrl;
+                    videoElements[index] = iframe;
+                    console.log(`Loading TikTok video: ${embedUrl}`);
+                } else {
+                    // Video already loaded, just make sure it's playing
+                    console.log(`TikTok video already loaded for index ${index}`);
+                }
             }
         }
     };
@@ -1482,28 +1502,38 @@ function initTikTokPhoneScroll() {
         const overlay = videoItem.querySelector('.tiktok-overlay');
 
         if (iframe && overlay) {
-            // Show overlay and stop video
+            // Show overlay and clear video to pause
             overlay.style.opacity = '1';
             overlay.style.pointerEvents = 'auto';
 
-            // Clear iframe source to stop video
+            // Clearing src stops the video
             iframe.src = '';
+            delete videoElements[index];
         }
     };
 
     // Handle scroll events with debounce for better performance
     const handleScroll = () => {
         clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(updateVideoPlayback, 100);
+        scrollTimeout = setTimeout(updateVideoPlayback, 150); // Slightly longer debounce
     };
 
     tiktokScroll.addEventListener('scroll', handleScroll, { passive: true });
 
-    // Initialize first video but don't auto-play (浏览器安全策略阻止自动播放)
+    // Add click anywhere in phone to enable "auto-play" mode (workaround for browser policies)
+    const enableAutoPlayClick = () => {
+        if (!userHasInteracted) {
+            userHasInteracted = true;
+            console.log('✅ Phone clicked - enabling TikTok-style scrolling! Videos will now auto-play on scroll.');
+            updateVideoPlayback(); // Immediately start playing current video
+        }
+    };
+
+    tiktokScroll.addEventListener('click', enableAutoPlayClick);
+
+    // Initialize - show instruction that scrolling will work after interaction
     setTimeout(() => {
-        updateVideoPlayback();
-        // Note: 自动播放被浏览器策略阻止，用户需要点击播放按钮
-        console.log('TikTok 视频已初始化，但不会自动播放（浏览器安全策略）');
+        console.log('📱 TikTok phone ready! Click or scroll to enable auto-play mode, just like real TikTok.');
     }, 500);
 
     // Smooth scrolling behavior
