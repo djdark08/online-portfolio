@@ -1696,25 +1696,21 @@ function openVideoModal(video) {
     const isPortraitVideo = video.isPortrait || false;
     const isMobile = window.innerWidth <= 768;
 
-    // Determine appropriate modal classes based on device type (primary) and video orientation (secondary)
+    // Determine appropriate modal classes based on VIDEO ORIENTATION (primary) and device (secondary)
     let modalClasses = ['video-modal'];
 
-    if (isMobile) {
-        // Mobile: Use device-appropriate modal style
-        if (isPortraitVideo) {
-            // Portrait video content on mobile → portrait modal for optimal viewing
+    if (isPortraitVideo) {
+        // Portrait content (TikTok videos) - Always use portrait modal orientation
+        if (isMobile) {
             modalClasses.push('portrait-video', 'portrait-mobile');
         } else {
-            // Landscape video content on mobile → landscape modal (horizontal on mobile)
-            modalClasses.push('landscape-video', 'landscape-mobile');
+            modalClasses.push('portrait-video', 'portrait-desktop');
         }
     } else {
-        // Desktop: Always use landscape modal style for optimal viewing (YouTube-style)
-        if (isPortraitVideo) {
-            // Portrait video content on desktop → landscape modal (expanded view)
-            modalClasses.push('portrait-video', 'landscape-desktop');
+        // Landscape content (YouTube videos) - Always use landscape modal orientation
+        if (isMobile) {
+            modalClasses.push('landscape-video', 'landscape-mobile');
         } else {
-            // Landscape video content on desktop → landscape modal (theater mode)
             modalClasses.push('landscape-video', 'landscape-desktop');
         }
     }
