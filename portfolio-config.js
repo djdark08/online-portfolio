@@ -391,19 +391,19 @@ const portfolioConfig = {
                 title: "Programmer Consultant",
                 company: "Freelance",
                 period: "06/2021 - 03/2024",
-                description: "Developed facial detection algorithms and microcontroller integration for client applications."
+                description: "In my role as a Programmer Consultant, I developed a facial detection algorithm utilizing Haar cascade techniques in Python. I tailored a unique cascade algorithm to meet specific client requirements, ensuring optimal performance for their application. Additionally, I created a program that was successfully integrated into a microcontroller, enhancing its functionality and enabling efficient real-time processing of facial recognition tasks. This experience allowed me to refine my skills in algorithm development and embedded systems, contributing to innovative solutions for my clients."
             },
             {
                 title: "Local Internet Service Provider",
                 company: "Self-Employed",
                 period: "04/2019 - 02/2023",
-                description: "Built and managed network infrastructure and server hosting services during the COVID pandemic."
+                description: "During the COVID pandemic, I launched a small business as a Local Internet Service Provider, which provided me with invaluable exposure to networking and cybersecurity. In this role, I designed my own network topology and constructed a server to host various services, enabling me to offer reliable internet access to my clients. This hands-on experience was crucial in developing my technical skills and understanding of networking principles. The challenges I encountered while managing the business laid a strong foundation for my expertise in the field, allowing me to cultivate a deep understanding of network infrastructure and security protocols."
             },
             {
                 title: "Network Specialist Consultant",
                 company: "Contract-Based",
                 period: "02/2023 - 06/2023",
-                description: "Designed network topologies, firewall architecture, and optimized load balancing systems."
+                description: "As a contract-based Network Specialist Consultant, I provided comprehensive networking solutions for my client. I was responsible for designing their network topology and firewall architecture, ensuring robust security measures and optimal performance. My work involved assessing their existing infrastructure and implementing a tailored solution that addressed their specific needs. Additionally, I optimized their load balancing systems to enhance traffic management, ensuring efficient resource allocation and minimizing latency. This role allowed me to leverage my expertise in network design and security, contributing to a more resilient and efficient network environment for my client."
             }
         ]
     },
