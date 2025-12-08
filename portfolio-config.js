@@ -417,42 +417,48 @@ const portfolioConfig = {
                 title: "Hexapod Robot Build with Arduino",
                 description: "Building and programming a hexapod robot using Arduino microcontroller with custom gait algorithms and sensor integration",
                 videoId: "8PpI4K6It7U",
-                thumbnail: "https://img.youtube.com/vi/8PpI4K6It7U/maxresdefault.jpg"
+                thumbnail: "https://img.youtube.com/vi/8PpI4K6It7U/maxresdefault.jpg",
+                isPortrait: false // Landscape/Horizontal video for desktop
             },
             {
                 platform: "youtube",
                 title: "Facial Recognition AI with Python",
                 description: "Real-time facial recognition system using Python, OpenCV, and machine learning algorithms for accurate face detection and identification",
                 videoId: "RSFlfT5mHoE",
-                thumbnail: "https://img.youtube.com/vi/RSFlfT5mHoE/maxresdefault.jpg"
+                thumbnail: "https://img.youtube.com/vi/RSFlfT5mHoE/maxresdefault.jpg",
+                isPortrait: false // Landscape/Horizontal video for desktop
             },
             {
                 platform: "youtube",
                 title: "Human Detection AI using HOG Cascades",
                 description: "Advanced human detection system using Histogram of Oriented Gradients (HOG) cascades and computer vision techniques",
                 videoId: "aITQ3wRgmTE",
-                thumbnail: "https://img.youtube.com/vi/aITQ3wRgmTE/maxresdefault.jpg"
+                thumbnail: "https://img.youtube.com/vi/aITQ3wRgmTE/maxresdefault.jpg",
+                isPortrait: false // Landscape/Horizontal video for desktop
             },
             {
                 platform: "tiktok",
                 title: "Robotics R&D Project Demo",
                 description: "Demonstrating advanced robotics research and development project with innovative automation solutions",
                 videoId: "7344258260507184389",
-                thumbnail: "https://www.tiktok.com/@grayagony/video/7344258260507184389?is_from_webapp=1&sender_device=pc&web_id=7555855229960013320"
+                thumbnail: "https://www.tiktok.com/@grayagony/video/7344258260507184389?is_from_webapp=1&sender_device=pc&web_id=7555855229960013320",
+                isPortrait: true // Portrait/Vertical video like mobile TikTok
             },
             {
                 platform: "tiktok",
                 title: "Dancing Servos using Arduino",
                 description: "Creative servo motor choreography project demonstrating precise Arduino control and timing algorithms",
                 videoId: "7312649776233729286",
-                thumbnail: "https://www.tiktok.com/@grayagony/video/7312649776233729286?is_from_webapp=1&sender_device=pc&web_id=7555855229960013320"
+                thumbnail: "https://www.tiktok.com/@grayagony/video/7312649776233729286?is_from_webapp=1&sender_device=pc&web_id=7555855229960013320",
+                isPortrait: true // Portrait/Vertical video like mobile TikTok
             },
             {
                 platform: "tiktok",
                 title: "Hexapod Robot Calibration",
                 description: "Precise hexapod robot calibration process using advanced kinematics and sensor integration techniques",
                 videoId: "7193904203901734171",
-                thumbnail: "https://www.tiktok.com/@grayagony/video/7193904203901734171?is_from_webapp=1&sender_device=pc&web_id=7555855229960013320"
+                thumbnail: "https://www.tiktok.com/@grayagony/video/7193904203901734171?is_from_webapp=1&sender_device=pc&web_id=7555855229960013320",
+                isPortrait: true // Portrait/Vertical video like mobile TikTok
             }
         ]
     },

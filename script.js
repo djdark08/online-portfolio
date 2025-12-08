@@ -1276,6 +1276,12 @@ function populateVideoLinks() {
 
         const iframeId = `video-${index + 1}`;
 
+        // Get thumbnail URL based on platform
+        let thumbnailUrl = video.thumbnail || '';
+        if (!thumbnailUrl && video.platform === 'youtube') {
+            thumbnailUrl = `https://img.youtube.com/vi/${video.videoId}/maxresdefault.jpg`;
+        }
+
         videoCard.innerHTML = `
             <div class="video-container">
                 <iframe
@@ -1293,6 +1299,7 @@ function populateVideoLinks() {
                         <span class="platform-badge">${video.platform === 'youtube' ? 'YouTube' : 'TikTok'}</span>
                     </button>
                 </div>
+                ${thumbnailUrl ? `<img class="video-thumbnail" src="${thumbnailUrl}" alt="${video.title}" loading="lazy" onerror="this.style.display='none'">` : ''}
             </div>
             <div class="video-content">
                 <h3 class="video-title">${video.title}</h3>
@@ -1302,6 +1309,9 @@ function populateVideoLinks() {
 
         videoLinksGrid.appendChild(videoCard);
     });
+
+    // Initialize video hover previews
+    initVideoPreviews();
 }
 
 // Timeline Gallery functionality
@@ -1572,6 +1582,163 @@ function seekVideo(event, progressContainer) {
         const seekTime = (clickX / progressWidth) * video.duration;
         video.currentTime = seekTime;
     }
+}
+
+// Video preview functionality with modal popups
+function initVideoPreviews() {
+    const videoCards = document.querySelectorAll('.video-link-card');
+
+    videoCards.forEach(card => {
+        const videoContainer = card.querySelector('.video-container');
+        const overlay = card.querySelector('.video-overlay');
+        const thumbnail = card.querySelector('.video-thumbnail');
+        const playBtn = card.querySelector('.video-play-btn');
+
+        if (!videoContainer || !overlay) return;
+
+        // Desktop hover functionality for thumbnail preview
+        card.addEventListener('mouseenter', () => {
+            // Hide overlay and show thumbnail on hover
+            if (overlay) overlay.style.opacity = '0';
+            if (thumbnail) thumbnail.style.opacity = '1';
+        });
+
+        card.addEventListener('mouseleave', () => {
+            // Show overlay and hide thumbnail on mouse leave
+            if (overlay) overlay.style.opacity = '1';
+            if (thumbnail) thumbnail.style.opacity = '0';
+        });
+
+        // Click to open modal
+        if (playBtn) {
+            playBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const cardIndex = Array.from(document.querySelectorAll('.video-link-card')).indexOf(card);
+                if (typeof config !== 'undefined' && config.videoLinks?.videos?.[cardIndex]) {
+                    openVideoModal(config.videoLinks.videos[cardIndex]);
+                }
+            });
+        }
+    });
+
+    // Also create the modal HTML
+    createVideoModal();
+}
+
+// Create video modal HTML structure
+function createVideoModal() {
+    const modalHTML = `
+        <div id="video-modal" class="video-modal">
+            <div class="video-modal-backdrop" id="video-modal-backdrop"></div>
+            <div class="video-modal-content">
+                <button class="video-modal-close" id="video-modal-close">✕</button>
+                <div class="video-modal-iframe-container">
+                    <iframe id="video-modal-iframe" class="video-modal-iframe" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <div class="video-modal-info">
+                    <h3 id="video-modal-title"></h3>
+                    <p id="video-modal-description"></p>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // Add modal event listeners
+    const modal = document.getElementById('video-modal');
+    const backdrop = document.getElementById('video-modal-backdrop');
+    const closeBtn = document.getElementById('video-modal-close');
+
+    // Close modal functions
+    const closeModal = () => {
+        modal.classList.remove('active');
+        document.body.classList.remove('modal-open');
+
+        // Stop the video
+        const iframe = document.getElementById('video-modal-iframe');
+        if (iframe) {
+            iframe.src = '';
+        }
+    };
+
+    // Event listeners for closing modal
+    backdrop.addEventListener('click', closeModal);
+    closeBtn.addEventListener('click', closeModal);
+
+    // Close on ESC key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+}
+
+// Open video modal with specific video
+function openVideoModal(video) {
+    const modal = document.getElementById('video-modal');
+    const iframe = document.getElementById('video-modal-iframe');
+    const title = document.getElementById('video-modal-title');
+    const description = document.getElementById('video-modal-description');
+
+    if (!modal || !iframe || !title || !description) return;
+
+    // Stop any playing videos in the grid
+    pauseAllVideos();
+
+    // Set video information
+    title.textContent = video.title || '';
+    description.textContent = video.description || '';
+
+    // Determine video orientation (from config or detect from thumbnail aspect ratio)
+    const isPortraitVideo = video.isPortrait || false;
+    const isMobile = window.innerWidth <= 768;
+    const isLandscape = window.innerWidth > window.innerHeight;
+
+    // Determine appropriate modal classes based on video orientation and device
+    let modalClasses = ['video-modal'];
+
+    if (isPortraitVideo) {
+        // Portrait videos (like vertical mobile content)
+        modalClasses.push('portrait-video');
+        if (isMobile) {
+            modalClasses.push('portrait-mobile');
+        } else {
+            modalClasses.push('portrait-desktop');
+        }
+    } else {
+        // Landscape videos (like horizontal content)
+        modalClasses.push('landscape-video');
+        if (isMobile) {
+            modalClasses.push('landscape-mobile');
+        } else {
+            modalClasses.push('landscape-desktop');
+        }
+    }
+
+    // Apply modal classes
+    modal.className = modalClasses.join(' ');
+
+    // Set iframe source based on platform with modal-specific parameters
+    let embedUrl = '';
+    if (video.platform === 'youtube') {
+        embedUrl = `https://www.youtube.com/embed/${video.videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=0&controls=1&enablejsapi=1&origin=${window.location.origin}`;
+    } else if (video.platform === 'tiktok') {
+        embedUrl = `https://www.tiktok.com/embed/v2/${video.videoId}`;
+    }
+
+    iframe.src = embedUrl;
+
+    // Show modal with animation
+    modal.classList.add('active');
+    document.body.classList.add('modal-open');
+
+    // Focus management for accessibility
+    setTimeout(() => {
+        modal.focus();
+    }, 100);
 }
 
 // Initialize video controls when DOM is loaded
