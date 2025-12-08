@@ -1692,29 +1692,30 @@ function openVideoModal(video) {
     title.textContent = video.title || '';
     description.textContent = video.description || '';
 
-    // Determine video orientation (from config or detect from thumbnail aspect ratio)
+    // Determine device type and video orientation
     const isPortraitVideo = video.isPortrait || false;
     const isMobile = window.innerWidth <= 768;
-    const isLandscape = window.innerWidth > window.innerHeight;
 
-    // Determine appropriate modal classes based on video orientation and device
+    // Determine appropriate modal classes based on device type (primary) and video orientation (secondary)
     let modalClasses = ['video-modal'];
 
-    if (isPortraitVideo) {
-        // Portrait videos (like vertical mobile content)
-        modalClasses.push('portrait-video');
-        if (isMobile) {
-            modalClasses.push('portrait-mobile');
+    if (isMobile) {
+        // Mobile: Use device-appropriate modal style
+        if (isPortraitVideo) {
+            // Portrait video content on mobile → portrait modal for optimal viewing
+            modalClasses.push('portrait-video', 'portrait-mobile');
         } else {
-            modalClasses.push('portrait-desktop');
+            // Landscape video content on mobile → landscape modal (horizontal on mobile)
+            modalClasses.push('landscape-video', 'landscape-mobile');
         }
     } else {
-        // Landscape videos (like horizontal content)
-        modalClasses.push('landscape-video');
-        if (isMobile) {
-            modalClasses.push('landscape-mobile');
+        // Desktop: Always use landscape modal style for optimal viewing (YouTube-style)
+        if (isPortraitVideo) {
+            // Portrait video content on desktop → landscape modal (expanded view)
+            modalClasses.push('portrait-video', 'landscape-desktop');
         } else {
-            modalClasses.push('landscape-desktop');
+            // Landscape video content on desktop → landscape modal (theater mode)
+            modalClasses.push('landscape-video', 'landscape-desktop');
         }
     }
 
