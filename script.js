@@ -1342,10 +1342,10 @@ function populateVideoLinks() {
             </div>
         `;
 
-        videoLinksGrid.appendChild(phoneContainer);
-
         // Initialize TikTok phone scrolling
         initTikTokPhoneScroll();
+
+        videoLinksGrid.appendChild(phoneContainer);
     }
 
     // Create YouTube video cards (traditional cards)
