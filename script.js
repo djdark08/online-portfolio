@@ -1474,20 +1474,25 @@ function initTikTokPhoneScroll() {
             // Start playing the video
             const tiktokVideos = config.videoLinks.videos.filter(video => video.platform === 'tiktok');
             if (tiktokVideos[index]) {
-                // Try TikTok embed with working URL format
                 const videoId = tiktokVideos[index].videoId;
-                const username = tiktokVideos[index].username || 'user';
 
-                // Use the most reliable TikTok embed format
-                const embedUrl = `https://www.tiktok.com/embed/${videoId}`;
+                // Try multiple TikTok embed formats
+                let embedUrl = '';
 
-                if (!videoElements[index]) {
+                // First try: Standard embed format that works
+                if (videoId && videoId.length > 10) {
+                    embedUrl = `https://www.tiktok.com/embed/${videoId}`;
+                }
+
+                // If standard embed fails, try alternative formats
+                if (embedUrl && !videoElements[index]) {
                     iframe.src = embedUrl;
                     videoElements[index] = iframe;
                     console.log(`Loading TikTok video: ${embedUrl}`);
-                } else {
+                } else if (videoElements[index]) {
                     // Video already loaded, just make sure it's playing
-                    console.log(`TikTok video already loaded for index ${index}`);
+                    iframe.src = embedUrl; // Refresh to ensure playing
+                    console.log(`Refreshing TikTok video for index ${index}`);
                 }
             }
         }
@@ -1515,25 +1520,16 @@ function initTikTokPhoneScroll() {
     // Handle scroll events with debounce for better performance
     const handleScroll = () => {
         clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(updateVideoPlayback, 150); // Slightly longer debounce
+        scrollTimeout = setTimeout(updateVideoPlayback, 100);
     };
 
     tiktokScroll.addEventListener('scroll', handleScroll, { passive: true });
 
-    // Add click anywhere in phone to enable "auto-play" mode (workaround for browser policies)
-    const enableAutoPlayClick = () => {
-        if (!userHasInteracted) {
-            userHasInteracted = true;
-            console.log('✅ Phone clicked - enabling TikTok-style scrolling! Videos will now auto-play on scroll.');
-            updateVideoPlayback(); // Immediately start playing current video
-        }
-    };
-
-    tiktokScroll.addEventListener('click', enableAutoPlayClick);
-
-    // Initialize - show instruction that scrolling will work after interaction
+    // Initialize first video but don't auto-play (浏览器安全策略阻止自动播放)
     setTimeout(() => {
-        console.log('📱 TikTok phone ready! Click or scroll to enable auto-play mode, just like real TikTok.');
+        updateVideoPlayback();
+        // Note: 自动播放被浏览器策略阻止，用户需要点击播放按钮
+        console.log('TikTok 视频已初始化，但不会自动播放（浏览器安全策略）');
     }, 500);
 
     // Smooth scrolling behavior
@@ -1625,19 +1621,7 @@ function initTikTokPhoneScroll() {
     }, 4000);
 }
 
-// Play TikTok video in modal when tapped/clicked
-function playTikTokVideo(index) {
-    // Get all TikTok videos from config
-    if (!config.videoLinks?.videos) return;
-
-    const tiktokVideos = config.videoLinks.videos.filter(video => video.platform === 'tiktok');
-    const video = tiktokVideos[index];
-
-    if (video) {
-        // Open TikTok video in new tab since embedding doesn't work reliably
-        window.open(`https://tiktok.com/@${video.username || 'user'}/video/${video.videoId}`, '_blank');
-    }
-}
+// TikTok video functionality is handled inside the phone interface
 
 // Toggle like animation on TikTok videos
 function toggleLike(index) {
