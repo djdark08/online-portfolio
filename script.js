@@ -1717,6 +1717,11 @@ function openVideoModal(video) {
         }
     }
 
+    // Ensure TikTok and portrait videos get proper portrait modal styling
+    if (isPortraitVideo || video.platform === 'tiktok') {
+        modalClasses = ['video-modal', 'portrait-video', 'portrait-mobile'];
+    }
+
     // Apply modal classes
     modal.className = modalClasses.join(' ');
     console.log('Modal classes applied:', modalClasses, 'Video platform:', video.platform, 'isPortrait:', isPortraitVideo);
