@@ -23,7 +23,7 @@ const portfolioConfig = {
 
     // Navigation Menu - EDITABLE
     navigation: {
-        logo: "❖",
+        logo: "❖", 
         menuItems: [
             { name: "Home", link: "#home" },
             { name: "About Me", link: "#about" },

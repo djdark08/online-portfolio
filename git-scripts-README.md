@@ -4,7 +4,7 @@ This directory contains two Python scripts for easy synchronization between your
 
 ## Scripts Overview
 
-### 🔄 `update.py` - Push Local Changes to GitHub
+### `update.py` - Push Local Changes to GitHub
 - **Purpose**: Uploads your local changes to GitHub
 - **Use when**: You want to backup your local work to GitHub
 - **What it does**:
@@ -13,7 +13,7 @@ This directory contains two Python scripts for easy synchronization between your
   - Commits with timestamp
   - Pushes to GitHub remote
 
-### 📥 `sync.py` - Pull Changes from GitHub
+### `sync.py` - Pull Changes from GitHub
 - **Purpose**: Downloads latest changes from GitHub to your local machine
 - **Use when**: You want to get the latest updates from GitHub
 - **What it does**:
@@ -63,92 +63,92 @@ python3 sync.py
 ### What Each Script Does
 
 #### `update.py` Workflow:
-1. ✅ Checks if you're in a git repository
-2. 🔍 Shows current git status
-3. 📋 Adds all changes to staging
-4. 💾 Commits with automatic timestamp message
-5. 🚀 Pushes to GitHub (tries main, then master branch)
-6. 🎉 Confirms successful upload
+1. Checks if you're in a git repository
+2. Shows current git status
+3. Adds all changes to staging
+4. Commits with automatic timestamp message
+5. Pushes to GitHub (tries main, then master branch)
+6. Confirms successful upload
 
 #### `sync.py` Workflow:
-1. ✅ Checks if you're in a git repository
-2. 🔐 Verifies GitHub authentication
-3. 📦 Stashes local changes (if any) for safety
-4. 📥 Fetches latest changes from GitHub
-5. 🔄 Pulls changes with rebase
-6. 📦 Restores stashed changes (if any)
-7. 📊 Shows summary of what was synced
+1. Checks if you're in a git repository
+2. Verifies GitHub authentication
+3. Stashes local changes (if any) for safety
+4. Fetches latest changes from GitHub
+5. Pulls changes with rebase
+6. Restores stashed changes (if any)
+7. Shows summary of what was synced
 
 ## Safety Features
 
 ### `update.py` Safety:
-- ✅ Shows what will be committed before proceeding
-- ✅ Requires confirmation before pushing
-- ✅ Handles authentication errors gracefully
-- ✅ Provides helpful error messages
+- Shows what will be committed before proceeding
+- Requires confirmation before pushing
+- Handles authentication errors gracefully
+- Provides helpful error messages
 
 ### `sync.py` Safety:
-- ✅ Stashes local changes before pulling (asks first)
-- ✅ Restores stashed changes after successful sync
-- ✅ Handles merge conflicts gracefully
-- ✅ Shows remote changes before pulling
-- ✅ Requires confirmation before proceeding
+- Stashes local changes before pulling (asks first)
+- Restores stashed changes after successful sync
+- Handles merge conflicts gracefully
+- Shows remote changes before pulling
+- Requires confirmation before proceeding
 
 ## Example Output
 
 ### Update Script:
 ```
-🔄 GitHub Update Script Starting...
+GitHub Update Script Starting...
 ==================================================
-📊 Current Status:
+Current Status:
  M script.js
  A new-feature.js
 
-🔍 Proceed with update? (y/N): y
+Proceed with update? (y/N): y
 
-🚀 Starting update process...
-📋 Adding files to staging...
-✅ Files added successfully
-💾 Committing changes with message: 'Update portfolio - 2024-01-15 14:30:22'
-✅ Changes committed successfully
-🚀 Pushing to GitHub...
-✅ Successfully pushed to GitHub!
+Starting update process...
+Adding files to staging...
+Files added successfully
+Committing changes with message: 'Update portfolio - 2024-01-15 14:30:22'
+Changes committed successfully
+Pushing to GitHub...
+Successfully pushed to GitHub!
 
-🎉 Update completed successfully!
-✅ All local changes have been pushed to GitHub
+Update completed successfully!
+All local changes have been pushed to GitHub
 ```
 
 ### Sync Script:
 ```
-🔄 GitHub Sync Script Starting...
+GitHub Sync Script Starting...
 ==================================================
-🌿 Current branch: main
+Current branch: main
 
-🔍 Checking for updates...
-📋 Remote changes available:
+Checking for updates...
+Remote changes available:
    • 2a1b3c4 Add new portfolio section
    • 5d6e7f8 Fix responsive design issues
 
-🔍 Proceed with sync? (y/N): y
+Proceed with sync? (y/N): y
 
-🚀 Starting sync process...
-📦 Stashing local changes...
-✅ Local changes stashed
-📥 Fetching latest changes from GitHub...
-✅ Successfully fetched from GitHub
-🔄 Pulling changes from GitHub...
-✅ Successfully pulled from GitHub
-📦 Restoring stashed changes...
-✅ Stashed changes restored
+Starting sync process...
+Stashing local changes...
+Local changes stashed
+Fetching latest changes from GitHub...
+Successfully fetched from GitHub
+Pulling changes from GitHub...
+Successfully pulled from GitHub
+Restoring stashed changes...
+Stashed changes restored
 
-📊 Sync Summary:
+Sync Summary:
 Recent commits:
    • 2a1b3c4 Add new portfolio section
    • 5d6e7f8 Fix responsive design issues
    • 8g9h0i1 Update portfolio - 2024-01-15 14:25:10
 
-🎉 Sync completed successfully!
-✅ Local repository is now up to date with GitHub
+Sync completed successfully!
+Local repository is now up to date with GitHub
 ```
 
 ## Troubleshooting

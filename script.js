@@ -1200,8 +1200,8 @@ function populateReferences() {
                 <p class="reference-title">${reference.title}</p>
                 <p class="reference-relationship">${reference.relationship}</p>
                 <div class="reference-contact">
-                    <div class="contact-info">📧 ${reference.email}</div>
-                    <div class="contact-info">📱 ${reference.phone}</div>
+                    <div class="contact-info">${reference.email}</div>
+                    <div class="contact-info">${reference.phone}</div>
                 </div>
             </div>
         `;

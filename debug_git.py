@@ -18,7 +18,7 @@ def run_command(command, shell=False):
         )
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
-        print(f"❌ Error running command: {command}")
+        print(f"Error running command: {command}")
         print(f"Error: {e.stderr}")
         return None
 
@@ -46,9 +46,9 @@ try:
     # Test the logic from our script
     print("\n5. Testing script logic:")
     if result1 is not None and ".git" in result1:
-        print("   ✅ Git repository detected")
+        print("   Git repository detected")
     else:
-        print("   ❌ Git repository NOT detected")
+        print("   Git repository NOT detected")
 
 except Exception as e:
     print(f"Exception: {e}")

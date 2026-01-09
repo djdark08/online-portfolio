@@ -2625,7 +2625,7 @@ body.modal-open {
 }
 
 .phone-network::before {
-    content: '📶';
+    content: '📶'; 
     font-size: 10px;
     margin-right: 2px;
 }
