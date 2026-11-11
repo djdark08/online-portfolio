@@ -1380,9 +1380,9 @@ body:not(.loaded) * {
     margin-bottom: 3rem;
     color: var(--text-primary);
     position: relative;
-    display: inline-block;
-    left: 50%;
-    transform: translateX(-50%);
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .experience-title::after {
@@ -4505,3 +4505,35 @@ html[data-motion="off"] #radiation-canvas {
     display: none !important;
 }
 
+/* ---------- 27. Narrow screens never scroll sideways ---------------------- */
+/* A grid track wider than the viewport is what pushed the page sideways on
+   small phones; every track is now capped at the available width. */
+
+html {
+    overflow-x: clip;
+}
+
+.projects-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr));
+}
+
+.experience-timeline {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+}
+
+.technical-skills-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+
+.projects-grid > *,
+.experience-timeline > *,
+.technical-skills-grid > *,
+.tcg-card,
+.project-card,
+.gallery-tiktok-phone,
+.iphone-container,
+.phone-mockup,
+.tiktok-phone-container {
+    min-width: 0;
+    max-width: 100%;
+}
