@@ -6,6 +6,14 @@
 // =====================================================
 
 const portfolioConfig = {
+    optimization: {
+        imageLazyLoading: true,
+        preconnectFonts: true,
+        preconnectCDN: true,
+        hardwareAcceleration: true,
+        animationThrottle: 16,
+        debounceResize: 250
+    },
     // Personal Information - EDITABLE
     personal: {
         name: "Lloyd Enterina Agonia",
@@ -13,8 +21,8 @@ const portfolioConfig = {
         pageTitle: "Lloyd Enterina Agonia - Portfolio",
         pageLogo: "/images/logo.jpg",
         greeting: "Hello.",
-        profileImage: "/images/profile.jpg",
-        resumeLink: "#",
+        profileImage: "/images/profile_optimized.jpg",
+        resumeLink: "https://github.com/djdark08",
         email: "agonia.lloyd8@gmail.com",
         bio: "I am a versatile tech professional with a strong background in software development, robotics, and network engineering.",
         location: "Davao City, Philippines",
@@ -43,7 +51,16 @@ const portfolioConfig = {
         categories: [
             {
                 title: "Programming & Automation",
+                image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=900&q=60",
+                imageAlt: "Code on a monitor",
                 icon: "👨‍💻",
+                type: "electric",
+                hp: 150,
+                rarity: "★ Rare Holo",
+                weakness: "Deadlines",
+                resistance: "Bugs",
+                retreat: 2,
+                set: "Automation Set",
                 skills: [
                     "Python Programming",
                     "C Programming",
@@ -57,7 +74,16 @@ const portfolioConfig = {
             },
             {
                 title: "Network & Cybersecurity",
+                image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=900&q=60",
+                imageAlt: "Cybersecurity padlock over code",
                 icon: "🔐",
+                type: "psychic",
+                hp: 160,
+                rarity: "★ Ultra Rare",
+                weakness: "Downtime",
+                resistance: "Firewalls",
+                retreat: 3,
+                set: "Security Set",
                 skills: [
                     "pfSense System",
                     "MikroTik Systems",
@@ -71,7 +97,16 @@ const portfolioConfig = {
             },
             {
                 title: "Cloud & Server Infrastructure",
+                image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=60",
+                imageAlt: "Server room racks",
                 icon: "☁️",
+                type: "water",
+                hp: 140,
+                rarity: "★ Rare Holo",
+                weakness: "Outages",
+                resistance: "Redundancy",
+                retreat: 3,
+                set: "Cloud Set",
                 skills: [
                     "Cloud Computing/Hosting",
                     "Server Design & Management",
@@ -85,7 +120,16 @@ const portfolioConfig = {
             },
             {
                 title: "Hardware & Systems",
+                image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=60",
+                imageAlt: "Circuit board close-up",
                 icon: "🔧",
+                type: "steel",
+                hp: 180,
+                rarity: "★ Secret Rare",
+                weakness: "Heat",
+                resistance: "Maintenance",
+                retreat: 1,
+                set: "Hardware Set",
                 skills: [
                     "CCTV Systems",
                     "AutoCAD/Webots/SketchUp",
@@ -94,6 +138,22 @@ const portfolioConfig = {
                     "System Issue Resolution",
                     "Technical Support",
                     "Smart Storage Systems"
+                ]
+            },
+            {
+                title: "Industrial Infrastructure",
+                icon: "\u{1F3ED}",
+                type: "steel",
+                hp: 170,
+                rarity: "\u2605 Ultra Rare",
+                set: "Industrial Set",
+                image: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=900&q=60",
+                imageAlt: "Industrial plant piping and control systems",
+                skills: [
+                    "Electrical Maintenance & Installation",
+                    "PLC / SCADA Networking",
+                    "Electronic Repair",
+                    "Robotics Projects"
                 ]
             }
         ]
@@ -126,12 +186,6 @@ const portfolioConfig = {
                 description: "Machine learning projects built with Python, TensorFlow, and PyTorch, raspberry pi, and Arduino"
             }
         ],
-
-        statistics: [
-            { number: 16, suffix: "+", label: "Completed Projects" },
-            { number: 95, suffix: "%", label: "Client satisfaction" },
-            { number: 4, suffix: "+", label: "Years of experience" }
-        ]
     },
 
     // Theme Configuration
@@ -206,7 +260,16 @@ const portfolioConfig = {
             greetingTypingDelay: 500,
             bioTypingDelay: 1500,
             fadeInDelay: 100,
-            scrollThrottle: 16
+            scrollThrottle: 16,
+            particleSwarm: {
+                enabled: true,
+                defaultOn: true,
+                count: 72,
+                speed: 0.6,
+                size: 1.8,
+                linkDistance: 130,
+                pointerRadius: 150
+            }
         }
     },
 
@@ -219,7 +282,7 @@ const portfolioConfig = {
                 name: "VoIP PBX and Network Server Setup",
                 description: "Comprehensive VoIP PBX and network infrastructure setup with security and monitoring.",
                 image: "/images/ServerDeploy.png",
-                link: "#",
+                link: "#projects",
                 technologies: ["Windows Server", "Linux Server", "Cisco ASA", "Python", "Docker", "Kubernetes"],
                 featured: true,
                 date: "Project"
@@ -228,7 +291,7 @@ const portfolioConfig = {
                 name: "PLC Control System",
                 description: "Industrial automation solution with PLC control for manufacturing optimization.",
                 image: "/images/PLC-operate.png",
-                link: "#",
+                link: "#projects",
                 technologies: ["PLC", "SCADA", "Industrial IoT", "Python"],
                 featured: false,
                 date: "Project"
@@ -237,7 +300,7 @@ const portfolioConfig = {
                 name: "3D Printer Farming System",
                 description: "Automated 3D printing farming system with monitoring and control.",
                 image: "/images/repair3dPrinter.png",
-                link: "#",
+                link: "#projects",
                 technologies: ["Arduino", "Raspberry Pi", "3D Printing"],
                 featured: false,
                 date: "Project"
@@ -246,7 +309,7 @@ const portfolioConfig = {
                 name: "Teaching Robotics with VEX",
                 description: "Robotics education platform with VEX Robotics integration.",
                 image: "/images/teach-robotics.png",
-                link: "#",
+                link: "#projects",
                 technologies: ["VEX Robotics", "ROS", "Python", "C++"],
                 featured: false,
                 date: "Project"
@@ -255,7 +318,7 @@ const portfolioConfig = {
                 name: "Network Monitoring Systems",
                 description: "Comprehensive network monitoring solutions for administrators.",
                 image: "/images/network-monitoring.png",
-                link: "#",
+                link: "#projects",
                 technologies: ["Grafana", "Prometheus", "Python", "Docker"],
                 featured: false,
                 date: "Project"
@@ -264,7 +327,7 @@ const portfolioConfig = {
                 name: "R&D AI Algorithm",
                 description: "Advanced AI algorithms for autonomous systems.",
                 image: "/images/r&d-ai.png",
-                link: "#",
+                link: "#projects",
                 technologies: ["LLM", "Python", "C++", "Raspberry Pi", "ROS", "OpenCV", "TensorFlow"],
                 featured: false,
                 date: "Project"
@@ -391,19 +454,63 @@ const portfolioConfig = {
                 title: "Programmer Consultant",
                 company: "Freelance",
                 period: "06/2021 - 03/2024",
+                type: "fire",
+                icon: "💻",
+                hp: 130,
+                image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=900&q=60",
+                imageAlt: "Source code filling a dark monitor",
+                weakness: "Legacy systems",
+                resistance: "Scope creep",
+                retreat: 1,
                 description: "In my role as a Programmer Consultant, I developed a facial detection algorithm utilizing Haar cascade techniques in Python. I tailored a unique cascade algorithm to meet specific client requirements, ensuring optimal performance for their application. Additionally, I created a program that was successfully integrated into a microcontroller, enhancing its functionality and enabling efficient real-time processing of facial recognition tasks. This experience allowed me to refine my skills in algorithm development and embedded systems, contributing to innovative solutions for my clients."
             },
             {
                 title: "Local Internet Service Provider",
                 company: "Self-Employed",
                 period: "04/2019 - 02/2023",
+                type: "water",
+                icon: "📡",
+                hp: 140,
+                image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=60",
+                imageAlt: "Rows of servers and network cabling in a data room",
+                weakness: "Outages",
+                resistance: "Bad weather",
+                retreat: 3,
                 description: "During the COVID pandemic, I launched a small business as a Local Internet Service Provider, which provided me with invaluable exposure to networking and cybersecurity. In this role, I designed my own network topology and constructed a server to host various services, enabling me to offer reliable internet access to my clients. This hands-on experience was crucial in developing my technical skills and understanding of networking principles. The challenges I encountered while managing the business laid a strong foundation for my expertise in the field, allowing me to cultivate a deep understanding of network infrastructure and security protocols."
             },
             {
                 title: "Network Specialist Consultant",
                 company: "Contract-Based",
                 period: "02/2023 - 06/2023",
+                type: "psychic",
+                icon: "🔐",
+                hp: 125,
+                image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=900&q=60",
+                imageAlt: "Network security analyst monitoring systems",
+                weakness: "Downtime",
+                resistance: "Firewalls",
+                retreat: 2,
                 description: "As a contract-based Network Specialist Consultant, I provided comprehensive networking solutions for my client. I was responsible for designing their network topology and firewall architecture, ensuring robust security measures and optimal performance. My work involved assessing their existing infrastructure and implementing a tailored solution that addressed their specific needs. Additionally, I optimized their load balancing systems to enhance traffic management, ensuring efficient resource allocation and minimizing latency. This role allowed me to leverage my expertise in network design and security, contributing to a more resilient and efficient network environment for my client."
+            },
+            {
+                title: "IT Support",
+                company: "Side Job",
+                period: "2016 - Present",
+                type: "steel",
+                icon: "\u{1F5A5}\uFE0F",
+                image: "https://images.unsplash.com/photo-1593642532973-d31b6557fa68?auto=format&fit=crop&w=900&q=60",
+                imageAlt: "Technician servicing a desktop workstation",
+                description: "A side job I have kept for 10 years, since I was 16. My main role is making sure company equipment is well maintained and up to standards \u2014 diagnosing hardware faults, servicing workstations and peripherals, and keeping every machine on site reliable and ready for use."
+            },
+            {
+                title: "Plant Operator",
+                company: "Plant Operations",
+                period: "03/2023 - 03/2024",
+                type: "grass",
+                icon: "\u2699\uFE0F",
+                image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=900&q=60",
+                imageAlt: "Industrial plant machinery and piping",
+                description: "A one-year role from March 2023 to 2024, running day-to-day plant operations. I monitored equipment, carried out routine checks and maintenance, and kept production running safely within standard operating limits."
             }
         ]
     },

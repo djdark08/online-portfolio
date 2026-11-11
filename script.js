@@ -10,8 +10,119 @@ if (typeof window !== 'undefined' && window.portfolioConfig) {
     };
 }
 
-// Flag to track if typing animation is active
-let isTypingActive = false;
+// =====================================================
+// MOTION CONTROLLER
+// =====================================================
+// One switch drives every animation on the page: CSS keyframes, scroll
+// reveals, the typewriter, the counters and the particle swarm.
+
+const MOTION_STORAGE_KEY = 'motionEnabled';
+
+function motionEnabled() {
+    return document.documentElement.getAttribute('data-motion') !== 'off';
+}
+
+function escapeHtml(value) {
+    return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function syncMotionToggle() {
+    const toggle = document.getElementById('motion-toggle');
+    if (!toggle) return;
+
+    const on = motionEnabled();
+    toggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+
+    const label = on ? 'Turn animations off' : 'Turn animations on';
+    toggle.setAttribute('aria-label', label);
+    toggle.title = label;
+}
+
+function setMotion(enabled, options) {
+    const persist = !options || options.persist !== false;
+
+    document.documentElement.setAttribute('data-motion', enabled ? 'on' : 'off');
+
+    if (persist) {
+        try {
+            localStorage.setItem(MOTION_STORAGE_KEY, String(enabled));
+        } catch (error) {
+            /* storage can be blocked — the toggle still works for this visit */
+        }
+    }
+
+    syncMotionToggle();
+
+    if (enabled) {
+        initTypingAnimation();
+        initBioReveal();
+        initCounterAnimation();
+        initBuildSequence();
+        initRevealObserver();
+        initRevealFallback();
+        initCardInteractions();
+        initParticleSwarm();
+    } else {
+        stopParticleSwarm();
+        settleAnimations();
+    }
+}
+
+function initMotionToggle() {
+    const toggle = document.getElementById('motion-toggle');
+    if (!toggle) return;
+
+    if (toggle.dataset.bound !== 'true') {
+        toggle.dataset.bound = 'true';
+        toggle.addEventListener('click', () => setMotion(!motionEnabled()));
+    }
+
+    syncMotionToggle();
+}
+
+// Finish anything mid-flight so turning motion off never strands content.
+function settleAnimations() {
+    // With motion off the reveal gate must never hide anything: drop the gate
+    // class and pin the final state inline as a belt-and-braces guarantee.
+    document.documentElement.classList.remove('reveal-init');
+
+    document.querySelectorAll('[data-reveal]').forEach((element) => {
+        // A running animation beats inline styles, so stop those first.
+        if (element.getAnimations) {
+            element.getAnimations().forEach((animation) => animation.cancel());
+        }
+        element.classList.add('is-visible');
+        element.style.opacity = '1';
+        element.style.transform = 'none';
+    });
+
+    document.querySelectorAll('.build-section').forEach((section) => {
+        section.classList.add('is-built');
+    });
+
+    document.querySelectorAll('.bio-word').forEach((word) => {
+        word.style.opacity = '1';
+        word.style.transform = 'none';
+        word.style.filter = 'none';
+    });
+
+    document.querySelectorAll('.stat-number').forEach((counter) => {
+        const target = counter.getAttribute('data-target');
+        if (target !== null) {
+            counter.textContent = target + (counter.getAttribute('data-suffix') || '');
+        }
+    });
+
+    const greeting = document.querySelector('.hero-greeting');
+    if (greeting && config.personal?.greeting) {
+        greeting.textContent = config.personal.greeting;
+    }
+}
 
 // Populate HTML content from configuration
 function populateFromConfig() {
@@ -34,7 +145,7 @@ function populateFromConfig() {
             // Check if it's an emoji or image path
             if (config.personal.pageLogo.startsWith('/') || config.personal.pageLogo.startsWith('http')) {
                 // It's an image path - create an img element
-                navLogo.innerHTML = `<img src="${config.personal.pageLogo}" alt="Logo" class="nav-logo-image">`;
+                navLogo.innerHTML = `<img src="${config.personal.pageLogo}" alt="Logo" class="nav-logo-image" loading="eager">`;
             } else {
                 // It's an emoji or text - use it directly
                 navLogo.textContent = config.personal.pageLogo;
@@ -54,7 +165,15 @@ function populateFromConfig() {
             const a = document.createElement('a');
             a.href = item.link;
             a.className = 'nav-link';
-            a.textContent = item.name;
+            a.setAttribute('aria-label', item.name);
+
+            // Each letter lifts on its own so a hovered tab behaves like a card
+            // being picked out of the deck.
+            a.innerHTML = Array.from(item.name).map((char, index) => {
+                const glyph = char === ' ' ? '&nbsp;' : escapeHtml(char);
+                return `<span class="nav-char" style="--i:${index}" aria-hidden="true">${glyph}</span>`;
+            }).join('');
+
             li.appendChild(a);
             navMenu.appendChild(li);
         });
@@ -121,39 +240,66 @@ function initLogoScrollToTop() {
     // Populate theme toggle buttons
     populateThemeToggle();
 
-// Add populateThemeToggle function
-function populateThemeToggle() {
-    const themeToggle = document.getElementById('theme-toggle');
-    if (!themeToggle || !config.theme?.modes) return;
-
-    themeToggle.innerHTML = '';
-
-    Object.entries(config.theme.modes).forEach(([key, modeConfig]) => {
-        const button = document.createElement('button');
-        button.className = 'theme-btn';
-        button.setAttribute('data-theme', key);
-        button.onclick = () => switchToTheme(key);
-        button.innerHTML = '<span></span>';
-        themeToggle.appendChild(button);
-    });
-
-    // Set initial active theme
-    const currentTheme = config.theme?.mode || 'dark';
-    setActiveTheme(currentTheme);
+// One circular button that cycles through every configured theme.
+function themeGlyph(themeKey) {
+    const glyphs = {
+        dark: '🌙',
+        light: '☀️',
+        cyberpunk: '🤖',
+        techno: '⚡'
+    };
+    return glyphs[themeKey] || '🎨';
 }
 
-// Set active theme button
-function setActiveTheme(themeKey) {
-    // Remove active class from all theme buttons
-    document.querySelectorAll('.theme-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
+function themeKeys() {
+    return Object.keys(config.theme?.modes || {});
+}
 
-    // Add active class to current theme button
-    const activeBtn = document.querySelector(`[data-theme="${themeKey}"]`);
-    if (activeBtn) {
-        activeBtn.classList.add('active');
-    }
+function populateThemeToggle() {
+    const themeToggle = document.getElementById('theme-toggle');
+    if (!themeToggle) return;
+
+    themeToggle.innerHTML = '';
+    themeToggle.classList.add('theme-cycle-wrap');
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'theme-btn theme-cycle';
+    button.id = 'theme-cycle';
+    button.addEventListener('click', cycleTheme);
+    themeToggle.appendChild(button);
+
+    updateThemeCycleButton(config.theme?.mode || themeKeys()[0] || 'dark');
+}
+
+function updateThemeCycleButton(themeKey) {
+    const button = document.getElementById('theme-cycle');
+    if (!button) return;
+
+    const keys = themeKeys();
+    if (!keys.length) return;
+
+    const index = Math.max(0, keys.indexOf(themeKey));
+    const current = keys[index];
+    const next = keys[(index + 1) % keys.length];
+    const modes = config.theme?.modes || {};
+
+    button.dataset.theme = current;
+    button.textContent = themeGlyph(current);
+    button.title = `Theme: ${modes[current]?.name || current} — switch to ${modes[next]?.name || next}`;
+    button.setAttribute('aria-label', button.title);
+}
+
+function cycleTheme() {
+    const keys = themeKeys();
+    if (!keys.length) return;
+
+    const current = config.theme?.mode || keys[0];
+    const next = keys[(keys.indexOf(current) + 1) % keys.length];
+
+    config.theme.mode = next;
+    switchToTheme(next);
+    updateThemeCycleButton(next);
 }
 
 // Switch to specific theme
@@ -185,8 +331,11 @@ function switchToTheme(themeKey) {
         }
     }
 
-    // Update active button
-    setActiveTheme(themeKey);
+    // The swarm re-reads the accent colour on the next frame
+    swarmState.palette = null;
+
+    // Reflect the new theme on the cycle button
+    updateThemeCycleButton(themeKey);
 }
 
     // Update hero section content
@@ -205,6 +354,8 @@ function switchToTheme(themeKey) {
     // Update profile image
     const profileImg = document.querySelector('.profile-img');
     if (profileImg && config.personal?.profileImage) {
+        // Use loading="eager" for profile image as it's above the fold
+        profileImg.setAttribute('loading', 'eager');
         profileImg.src = config.personal.profileImage;
         profileImg.alt = config.personal.name || 'Profile';
     }
@@ -216,14 +367,14 @@ function switchToTheme(themeKey) {
     if (primaryBtn && config.heroButtons?.primary?.enabled) {
         primaryBtn.textContent = config.heroButtons.primary.text;
         if (config.heroButtons.primary.link !== '#') {
-            primaryBtn.onclick = () => window.open(config.heroButtons.primary.link, '_blank');
+            primaryBtn.onclick = () => window.open(config.heroButtons.primary.link, '_blank', 'noopener,noreferrer');
         }
     }
-    
+
     if (secondaryBtn && config.heroButtons?.secondary?.enabled) {
         secondaryBtn.textContent = config.heroButtons.secondary.text;
         if (config.heroButtons.secondary.link !== '#') {
-            secondaryBtn.onclick = () => window.open(config.heroButtons.secondary.link, '_blank');
+            secondaryBtn.onclick = () => window.open(config.heroButtons.secondary.link, '_blank', 'noopener,noreferrer');
         }
     }
 
@@ -239,17 +390,56 @@ function switchToTheme(themeKey) {
         });
     }
 
-    // Populate technical skills section
+    // Populate every section from configuration
     populateTechnicalSkills();
-
-    // Populate experience section
     populateExperience();
+    populateAbout();
+    initializeTikTokVideos();
+    populateProjectsWithTikTok();
+    populateVideoLinks();
+    populateReferences();
+    populateContact();
 
-// Populate technical skills section
+    // Apply theme colours from configuration
+    if (config.theme?.colors) {
+        applyThemeColors(config.theme.colors);
+    }
+}
+
+// =====================================================
+// TECHNICAL SKILLS — TRADING-CARD (POKÉMON STYLE) GRID
+// =====================================================
+
+const SKILL_TYPES = {
+    electric: { label: 'Electric', icon: '⚡' },
+    psychic: { label: 'Psychic', icon: '🔮' },
+    water: { label: 'Water', icon: '💧' },
+    steel: { label: 'Steel', icon: '⚙️' },
+    fire: { label: 'Fire', icon: '🔥' },
+    grass: { label: 'Grass', icon: '🌱' },
+    ghost: { label: 'Ghost', icon: '👻' },
+    dragon: { label: 'Dragon', icon: '🐉' }
+};
+
+const CARD_TYPE_ORDER = ['electric', 'psychic', 'water', 'steel', 'fire', 'grass', 'ghost', 'dragon'];
+
+function hashSkill(value) {
+    let hash = 2166136261;
+    for (let i = 0; i < value.length; i++) {
+        hash ^= value.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+    }
+    return Math.abs(hash);
+}
+
+// Stable pseudo-stats so every skill reads like a card move.
+function skillDamage(name, index) {
+    return 40 + ((hashSkill(name) + index * 7) % 9) * 10;
+}
+
 function populateTechnicalSkills() {
     if (!config.technicalSkills?.enabled) return;
 
-    // Update technical skills title and subtitle
     const titleElement = document.querySelector('.technical-skills-title');
     const subtitleElement = document.querySelector('.technical-skills-subtitle');
 
@@ -261,201 +451,436 @@ function populateTechnicalSkills() {
         subtitleElement.textContent = config.technicalSkills.subtitle;
     }
 
-    // Populate technical skills grid
     const skillsGrid = document.querySelector('.technical-skills-grid');
     if (!skillsGrid || !config.technicalSkills?.categories) return;
 
     skillsGrid.innerHTML = '';
 
-    config.technicalSkills.categories.forEach(category => {
-        const categoryDiv = document.createElement('div');
-        categoryDiv.className = 'skill-category';
+    config.technicalSkills.categories.forEach((category, index) => {
+        const typeKey = SKILL_TYPES[category.type] ? category.type : CARD_TYPE_ORDER[index % CARD_TYPE_ORDER.length];
+        const type = SKILL_TYPES[typeKey];
+        const skills = (category.skills || []).map((skill) => (typeof skill === 'string' ? skill : skill.name));
 
-        categoryDiv.innerHTML = `
-            <div class="skill-category-header">
-                <div class="skill-category-icon">${category.icon}</div>
-                <h3 class="skill-category-title">${category.title}</h3>
-            </div>
-            <div class="skill-list">
-                ${category.skills.map(skill => `<div class="skill-item">${skill}</div>`).join('')}
+        const card = document.createElement('article');
+        card.className = 'tcg-card';
+        card.dataset.type = typeKey;
+        card.dataset.reveal = '';
+        card.style.setProperty('--reveal-delay', `${index * 80}ms`);
+
+        card.innerHTML = `
+            <div class="tcg-card__inner">
+                <span class="tcg-card__holo" aria-hidden="true"></span>
+                <header class="tcg-top">
+                    <span class="tcg-stage">Skill</span>
+                    <h3 class="tcg-name">${escapeHtml(category.title)}</h3>
+                </header>
+                ${category.image
+                    ? cardArt(category.image, category.imageAlt || `${category.title} illustration`, {
+                        icon: category.icon || type.icon,
+                        badge: `${type.icon} ${escapeHtml(type.label)}`,
+                        rarity: escapeHtml(category.rarity || 'Holo'),
+                        extraClass: 'tcg-art--wide'
+                    })
+                    : `<div class="tcg-art">
+                    <span class="tcg-art__type">${type.icon} ${type.label}</span>
+                    <span class="tcg-art__icon" aria-hidden="true">${category.icon || type.icon}</span>
+                    <span class="tcg-art__rarity">${escapeHtml(category.rarity || 'Holo')}</span>
+                </div>`}
+                <div class="tcg-moves">
+                    ${skills.map((skill) => `
+                        <div class="tcg-move">
+                            <span class="tcg-move__name">${escapeHtml(skill)}</span>
+                        </div>`).join('')}
+                </div>
+                <footer class="tcg-foot">
+                    <span><b>Set</b> ${escapeHtml(category.set || 'Tech Skills')}</span>
+                </footer>
             </div>
         `;
 
-        skillsGrid.appendChild(categoryDiv);
+        skillsGrid.appendChild(card);
     });
 
-    // Initialize technical skills animations
-    initTechnicalSkillsAnimations();
+    initCardInteractions();
+}
+// Pointer-tracked tilt and foil shine for every trading card.
+// ---------- Magnetic tilt, glow and radiation ------------------------------
+const RADIATION_HUES = {
+    fire: 12,
+    water: 200,
+    electric: 48,
+    psychic: 288,
+    grass: 120,
+    steel: 210,
+    dragon: 265,
+    dark: 275
+};
+
+const radiation = { canvas: null, ctx: null, particles: [], frame: null, last: 0 };
+
+function radiationHue(card) {
+    const base = RADIATION_HUES[card.dataset.type] || 20;
+    return base + (Math.random() * 26 - 13);
 }
 
-// Technical Skills Animations (Simplified - No Movement)
-function initTechnicalSkillsAnimations() {
-    const skillCategories = document.querySelectorAll('.skill-category');
+function sizeRadiationCanvas() {
+    const canvas = radiation.canvas;
+    if (!canvas) return;
 
-    // Simple fade-in animation without movement
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.floor(window.innerWidth * dpr);
+    canvas.height = Math.floor(window.innerHeight * dpr);
+    canvas.style.width = `${window.innerWidth}px`;
+    canvas.style.height = `${window.innerHeight}px`;
+    radiation.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                observer.unobserve(entry.target);
+function ensureRadiationCanvas() {
+    if (radiation.canvas) return radiation.canvas;
+
+    const canvas = document.createElement('canvas');
+    canvas.id = 'radiation-canvas';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(canvas);
+
+    radiation.canvas = canvas;
+    radiation.ctx = canvas.getContext('2d');
+    sizeRadiationCanvas();
+
+    if (document.body.dataset.radiationBound !== 'true') {
+        document.body.dataset.radiationBound = 'true';
+        window.addEventListener('resize', sizeRadiationCanvas, { passive: true });
+    }
+
+    return canvas;
+}
+
+function emitRadiation(x, y, hue, count) {
+    if (!motionEnabled()) return;
+
+    ensureRadiationCanvas();
+    if (radiation.particles.length > 240) return;
+
+    const total = count || 3;
+    for (let i = 0; i < total; i += 1) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 0.7 + Math.random() * 2.2;
+        radiation.particles.push({
+            x,
+            y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 0.3,
+            life: 1,
+            decay: 0.014 + Math.random() * 0.016,
+            size: 1 + Math.random() * 2.2,
+            hue: hue === undefined ? 20 : hue
+        });
+    }
+
+    if (!radiation.frame) {
+        radiation.last = performance.now();
+        radiation.frame = window.requestAnimationFrame(stepRadiation);
+    }
+}
+
+function stepRadiation(now) {
+    const ctx = radiation.ctx;
+    const canvas = radiation.canvas;
+    if (!ctx || !canvas) {
+        radiation.frame = null;
+        return;
+    }
+
+    const dt = Math.min(2.5, Math.max(0.5, (now - radiation.last) / 16.67));
+    radiation.last = now;
+
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    ctx.globalCompositeOperation = 'lighter';
+
+    radiation.particles = radiation.particles.filter((particle) => {
+        particle.x += particle.vx * dt;
+        particle.y += particle.vy * dt;
+        particle.vy += 0.014 * dt;
+        particle.vx *= 0.984;
+        particle.vy *= 0.984;
+        particle.life -= particle.decay * dt;
+
+        if (particle.life <= 0) return false;
+
+        const alpha = Math.max(0, particle.life);
+        ctx.beginPath();
+        ctx.fillStyle = `hsla(${particle.hue}, 100%, 70%, ${alpha * 0.9})`;
+        ctx.arc(particle.x, particle.y, particle.size * (0.5 + alpha), 0, Math.PI * 2);
+        ctx.fill();
+        return true;
+    });
+
+    ctx.globalCompositeOperation = 'source-over';
+
+    if (radiation.particles.length) {
+        radiation.frame = window.requestAnimationFrame(stepRadiation);
+    } else {
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        radiation.frame = null;
+    }
+}
+
+// Magnetic tilt + radiation sparks for every card.
+function initCardInteractions() {
+    let lastEmit = 0;
+
+    document.querySelectorAll('.tcg-card').forEach((card) => {
+        if (card.dataset.tiltBound === 'true') return;
+        card.dataset.tiltBound = 'true';
+
+        card.addEventListener('pointerenter', (event) => {
+            if (!motionEnabled() || event.pointerType === 'touch') return;
+            emitRadiation(event.clientX, event.clientY, radiationHue(card), 9);
+        });
+
+        card.addEventListener('pointermove', (event) => {
+            if (!motionEnabled() || event.pointerType === 'touch') return;
+
+            const rect = card.getBoundingClientRect();
+            const px = (event.clientX - rect.left) / rect.width;
+            const py = (event.clientY - rect.top) / rect.height;
+
+            card.style.setProperty('--ry', `${((px - 0.5) * 13).toFixed(2)}deg`);
+            card.style.setProperty('--rx', `${((0.5 - py) * 13).toFixed(2)}deg`);
+            card.style.setProperty('--tx', `${((px - 0.5) * 14).toFixed(2)}px`);
+            card.style.setProperty('--ty', `${((py - 0.5) * 14).toFixed(2)}px`);
+            card.style.setProperty('--mx', `${(px * 100).toFixed(1)}%`);
+            card.style.setProperty('--my', `${(py * 100).toFixed(1)}%`);
+
+            const now = performance.now();
+            if (now - lastEmit > 55) {
+                lastEmit = now;
+                emitRadiation(event.clientX, event.clientY, radiationHue(card), 2);
             }
         });
-    }, observerOptions);
 
-    // Initially hide categories for simple fade-in
-    skillCategories.forEach((category, index) => {
-        category.style.opacity = '0';
-        category.style.transition = `opacity 0.6s ease ${index * 0.1}s`;
-        observer.observe(category);
+        const reset = () => {
+            card.style.setProperty('--ry', '0deg');
+            card.style.setProperty('--rx', '0deg');
+            card.style.setProperty('--tx', '0px');
+            card.style.setProperty('--ty', '0px');
+        };
+
+        card.addEventListener('pointerleave', reset);
+        card.addEventListener('blur', reset);
     });
-
-    // No hover interactions - completely static
-    // Technical skills remain perfectly static at all times
 }
 
-// Populate experience section from configuration
+// =====================================================
+// SHARED CARD PIECES
+// =====================================================
+
+// Card artwork window. Falls back to a type emoji if the photo is missing
+// or fails to load, so a card never shows a broken image.
+function cardArt(image, alt, options) {
+    const opts = options || {};
+    const icon = opts.icon || '★';
+    const img = image
+        ? `<img src="${image}" alt="${escapeHtml(alt || '')}" loading="lazy" decoding="async" onerror="this.remove()">`
+        : '';
+
+    return `
+        <div class="tcg-art tcg-art--photo ${opts.extraClass || ''}" style="--art-icon:'${icon}'">
+            ${img}
+            <span class="tcg-art__type">${opts.badge || ''}</span>
+            <span class="tcg-art__rarity">${opts.rarity || ''}</span>
+        </div>`;
+}
+
+// =====================================================
+// EXPERIENCE
+// =====================================================
+
 function populateExperience() {
     if (!config.experience?.enabled) return;
 
-    // Update experience section title
     const experienceTitle = document.querySelector('.experience-title');
     if (experienceTitle && config.experience?.title) {
         experienceTitle.textContent = config.experience.title;
     }
 
-    // Populate experience timeline
     const experienceTimeline = document.querySelector('.experience-timeline');
     if (!experienceTimeline || !config.experience?.positions) return;
 
     experienceTimeline.innerHTML = '';
 
     config.experience.positions.forEach((position, index) => {
-        const positionDiv = document.createElement('div');
-        positionDiv.className = 'experience-item';
+        const card = document.createElement('article');
+        card.className = 'experience-card tcg-card tcg-card--tab';
+        card.dataset.type = position.type || 'fire';
+        card.dataset.reveal = '';
+        card.style.setProperty('--reveal-delay', `${index * 90}ms`);
 
-        positionDiv.innerHTML = `
-            <div class="experience-header">
-                <h3 class="experience-position">${position.title}</h3>
-                <div class="experience-company">${position.company}</div>
-                <div class="experience-period">${position.period}</div>
-            </div>
-            <div class="experience-description">
-                <p>${position.description}</p>
+        card.innerHTML = `
+            <div class="tcg-card__inner">
+                <span class="tcg-card__holo" aria-hidden="true"></span>
+                <header class="tcg-top">
+                    <span class="tcg-stage">Experience</span>
+                    <h3 class="tcg-name">${escapeHtml(position.title)}</h3>
+                </header>
+                ${cardArt(position.image, position.imageAlt || position.title, {
+                    icon: position.icon || '💼',
+                    badge: `${position.icon || '💼'} ${escapeHtml(position.company)}`,
+                    rarity: escapeHtml(position.period),
+                    extraClass: 'tcg-art--wide'
+                })}
+                <p class="tcg-text">${escapeHtml(position.description)}</p>
+                <footer class="tcg-foot">
+                    <span><b>Role</b> ${escapeHtml(position.company)}</span>
+                </footer>
             </div>
         `;
 
-        experienceTimeline.appendChild(positionDiv);
+        experienceTimeline.appendChild(card);
     });
 
-    // Initialize experience animations
-    initExperienceAnimations();
+    initCardInteractions();
 }
+// =====================================================
+// ABOUT — one profile card
+// =====================================================
 
-// Experience section animations
-function initExperienceAnimations() {
-    const experienceItems = document.querySelectorAll('.experience-item');
+function populateAbout() {
+    const mount = document.querySelector('.about-content');
+    if (!mount) return;
 
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+    const aboutTitle = config.about?.title || 'About me';
+    const bio = (config.about?.description || '').trim();
+    const services = config.about?.services || [];
+    const name = config.personal?.name || '';
+    const profileImage = config.personal?.profileImage || '/images/profile_optimized.jpg';
+    const location = config.personal?.location || config.contacts?.location || '';
+
+    mount.innerHTML = `
+        <div class="about-head">
+            <div class="about-eyebrow">Profile</div>
+            <h2 class="about-title" id="about-title">${escapeHtml(aboutTitle)}</h2>
+        </div>
+        <article class="about-card tcg-card tcg-card--tab" data-type="electric" data-reveal>
+            <div class="tcg-card__inner">
+                <span class="tcg-card__holo" aria-hidden="true"></span>
+                <header class="tcg-top">
+                    <span class="tcg-stage">Profile</span>
+                    <h3 class="tcg-name">${escapeHtml(name)}</h3>
+                </header>
+                <div class="about-card__grid">
+                    ${cardArt(profileImage, `Portrait of ${name}`, {
+                        icon: '🤖',
+                        badge: '⚡ Robotics & AI',
+                        rarity: 'Engineer',
+                        extraClass: 'about-card__art'
+                    })}
+                    <p class="about-description" data-full-text="${escapeHtml(bio)}">${escapeHtml(bio)}</p>
+                </div>
+                <div class="tcg-moves about-abilities">
+                    ${services.map((service) => `
+                        <div class="tcg-move">
+                            <span class="tcg-move__name">
+                                <b>${service.icon || '★'} ${escapeHtml(service.title)}</b>
+                                <small>${escapeHtml(service.description || '')}</small>
+                            </span>
+                        </div>
+                    `).join('')}
+                </div>
+                <footer class="tcg-foot">
+                    <span><b>Based in</b> ${escapeHtml(location)}</span>
+                    <span><b>Open to</b> remote &amp; on-site</span>
+                </footer>
+            </div>
+        </article>
+    `;
+
+    initCardInteractions();
+}
+// =====================================================
+// BUILD SEQUENCE — the page assembles itself as you scroll
+// =====================================================
+
+function initBuildSequence() {
+    const sections = Array.from(document.querySelectorAll('section[id]'));
+    if (!sections.length) return;
+
+    sections.forEach((section) => {
+        section.classList.add('build-section');
+
+        // Section headings join the same staggered build.
+        section.querySelectorAll('h1, h2, .profile-container').forEach((heading, index) => {
+            if (heading.closest('.tcg-card')) return;
+            if (heading.hasAttribute('data-reveal')) return;
+            heading.setAttribute('data-reveal', '');
+            heading.style.setProperty('--reveal-delay', `${index * 40}ms`);
+        });
+    });
+
+    if (!motionEnabled()) {
+        sections.forEach((section) => section.classList.add('is-built'));
+        return;
+    }
+
+    if (!('IntersectionObserver' in window)) {
+        sections.forEach((section) => section.classList.add('is-built'));
+        return;
+    }
+
+    const build = (section) => {
+        if (section.classList.contains('is-built')) return;
+
+        // Reveal first: the rebuild is decorative and must never be able to
+        // stop a section from becoming visible.
+        section.classList.add('is-built', 'is-building');
+        window.setTimeout(() => section.classList.remove('is-building'), 1500);
+
     };
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target);
-            }
-        });
-    }, observerOptions);
+    // Whatever is already on screen builds immediately, so the first view never
+    // depends on an observer tick.
+    sections.forEach((section) => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) build(section);
+    });
 
-    experienceItems.forEach((item, index) => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateY(30px)';
-        item.style.transition = `opacity 0.6s ease ${index * 0.2}s, transform 0.6s ease ${index * 0.2}s`;
-        observer.observe(item);
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            observer.unobserve(entry.target);
+            build(entry.target);
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    sections.forEach((section) => {
+        if (section.classList.contains('is-built')) return;
+        observer.observe(section);
     });
 }
 
-    // Update about section title
-    const aboutTitle = document.querySelector('.about-title');
-    if (aboutTitle && config.about?.title) {
-        aboutTitle.textContent = config.about.title;
-    }
+// Gallery cards share one height so the grid reads as a single set.
+function equalizeCardSet(selector) {
+    const cards = Array.from(document.querySelectorAll(selector));
+    if (cards.length < 2) return;
 
-    // Update about description (will be handled by typing animation)
-    const aboutDescription = document.querySelector('.about-description');
-    if (aboutDescription) {
-        // Clear initial content for typing animation
-        aboutDescription.textContent = '';
-        aboutDescription.setAttribute('data-text', config.about?.description || '');
-    }
+    const apply = () => {
+        cards.forEach((card) => { card.style.height = ''; });
+        // offsetHeight ignores the reveal/tilt transforms, so equalising is exact.
+        const tallest = Math.max(...cards.map((card) => card.offsetHeight));
+        if (tallest > 0) {
+            cards.forEach((card) => { card.style.height = `${tallest}px`; });
+        }
+    };
 
-    // Update services
-    const servicesContainer = document.querySelector('.services');
-    if (servicesContainer && config.about?.services) {
-        servicesContainer.innerHTML = '';
-        config.about.services.forEach(service => {
-            const serviceDiv = document.createElement('div');
-            serviceDiv.className = 'service-item';
-            serviceDiv.innerHTML = `
-                <div class="service-icon">${service.icon}</div>
-                <div class="service-text">${service.title}</div>
-            `;
-            servicesContainer.appendChild(serviceDiv);
-        });
-    }
+    apply();
+    window.setTimeout(apply, 350);
+    window.addEventListener('resize', () => window.requestAnimationFrame(apply), { passive: true });
+}
 
-    // Update statistics
-    const statNumbers = document.querySelectorAll('.stat-number');
-    const statLabels = document.querySelectorAll('.stat-label');
-    
-    if (config.about?.statistics && statNumbers.length === config.about.statistics.length) {
-        config.about.statistics.forEach((stat, index) => {
-            if (statNumbers[index]) {
-                statNumbers[index].setAttribute('data-target', stat.number.toString());
-                statNumbers[index].textContent = '0';
-            }
-            if (statLabels[index]) {
-                statLabels[index].textContent = stat.label;
-            }
-        });
-    }
-
-    // Apply theme colors if configured
-    if (config.theme?.colors) {
-        applyThemeColors(config.theme.colors);
-    }
-
-    // Update CSS animations based on config
-    if (config.theme?.animations?.scrollSpeed) {
-        updateAnimationSpeed(config.theme.animations.scrollSpeed);
-    }
-
-    // Populate projects section with TikTok phone UI as first gallery item
-    populateProjectsWithTikTok();
-
-    // Populate project gallery section
-    populateProjectGallery();
-
-    // Populate video links section (TikTok phone moved to gallery, YouTube cards remain)
-    initializeTikTokVideos(); // Initialize TikTok videos first
-    populateVideoLinks();
-
-    // Populate experience section
-    populateExperience();
-
-    // Populate character references section
-    populateReferences();
-
-    // Populate contact section
-    populateContact();
+// Gallery and experience cards share one height per set.
+function equalizeGalleryCards() {
+    equalizeCardSet('.projects-grid .project-card.tcg-card');
+    equalizeCardSet('.experience-timeline .experience-card');
 }
 
 // Populate projects from configuration (now includes TikTok phone UI as first gallery item)
@@ -489,26 +914,31 @@ function populateProjectsWithTikTok() {
     }
 
     // Generate regular projects HTML
-    const regularProjectsHTML = config.projects?.list?.map(project => `
-        <div class="project-card ${project.featured ? 'featured' : ''}">
-            <div class="project-image">
-                <img src="${project.image}" alt="${project.name}">
-                <div class="project-overlay">
-                    <a href="${project.link}" class="project-link" target="_blank">View Project</a>
+    const regularProjectsHTML = config.projects?.list?.map((project, index) => {
+        return `
+        <article class="project-card tcg-card tcg-card--tab ${project.featured ? 'featured' : ''}" data-type="${project.featured ? 'dragon' : 'psychic'}" data-reveal style="--reveal-delay:${index * 70}ms">
+            <div class="tcg-card__inner">
+                <span class="tcg-card__holo" aria-hidden="true"></span>
+                <header class="tcg-top">
+                    <span class="tcg-stage">Project</span>
+                    <h3 class="tcg-name">${escapeHtml(project.name)}</h3>
+                </header>
+                ${cardArt(project.image, project.name, {
+                    icon: '🛠️',
+                    badge: project.featured ? '★ Featured' : '◆ Build',
+                    rarity: project.featured ? '★ Holo Rare' : '◆ Common'
+                })}
+                <p class="tcg-text">${escapeHtml(project.description)}</p>
+                <div class="tcg-energy">
+                    ${project.technologies.map(tech => `<span class="tech-tag">${escapeHtml(tech)}</span>`).join('')}
                 </div>
+                <footer class="tcg-foot">
+                    <span><b>Type</b> ${project.featured ? 'Flagship' : 'Project'}</span>
+                    <a class="tcg-foot__link" href="${project.link}" target="_blank" rel="noopener noreferrer">Open ↗</a>
+                </footer>
             </div>
-            <div class="project-content">
-                <div class="project-header">
-                    <h3 class="project-name">${project.name}</h3>
-                    <div class="project-date">${formatDate(project.date)}</div>
-                </div>
-                <p class="project-description">${project.description}</p>
-                <div class="project-technologies">
-                    ${project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
-                </div>
-            </div>
-        </div>
-    `).join('') || '';
+        </article>`;
+    }).join('') || '';
 
     // Combine TikTok phone tile with regular projects
     projectsGrid.innerHTML = tiktokHTML + regularProjectsHTML;
@@ -523,70 +953,58 @@ function populateProjectsWithTikTok() {
 function populateContact() {
     if (!config.contacts?.enabled) return;
 
-    // Update contact title and subtitle
-    const contactTitle = document.querySelector('.contact-title');
-    const contactSubtitle = document.querySelector('.contact-subtitle');
+    const container = document.querySelector('.contact-container');
+    if (!container) return;
 
-    if (contactTitle && config.contacts?.title) {
-        contactTitle.textContent = config.contacts.title;
-    }
+    const social = config.contacts.social || {};
+    const socialIcons = {
+        github: '🐙',
+        linkedin: '💼',
+        facebook: '📘',
+        twitter: '🐦',
+        instagram: '📷'
+    };
 
-    if (contactSubtitle && config.contacts?.subtitle) {
-        contactSubtitle.textContent = config.contacts.subtitle;
-    }
+    const socialLinks = Object.entries(social)
+        .filter(([, url]) => url && url !== '#')
+        .map(([platform, url]) => `
+            <a class="contact-social__link" href="${url}" target="_blank" rel="noopener noreferrer">
+                ${socialIcons[platform] || '🔗'} ${platform.charAt(0).toUpperCase() + platform.slice(1)}
+            </a>`)
+        .join('');
 
-    // Update contact information
-    const contactItems = document.querySelectorAll('.contact-item');
-    const contactInfo = [
-        { icon: '📧', value: config.contacts.email, label: 'Email' },
-        { icon: '📱', value: config.contacts.phone, label: 'Phone' },
-        { icon: '📍', value: config.contacts.location, label: 'Location' }
-    ];
+    container.innerHTML = `
+        <h2 class="contact-title">${escapeHtml(config.contacts.title || 'Contact Information')}</h2>
+        <article class="contact-card tcg-card tcg-card--tab" data-type="water" data-reveal style="--reveal-delay:60ms">
+            <div class="tcg-card__inner">
+                <span class="tcg-card__holo" aria-hidden="true"></span>
+                <header class="tcg-top">
+                    <span class="tcg-stage">Contact</span>
+                    <h3 class="tcg-name">Get in touch</h3>
+                </header>
+                <div class="tcg-moves contact-moves">
+                    <a class="tcg-move contact-move" href="mailto:${escapeHtml(config.contacts.email)}">
+                        <span class="contact-icon">📧</span>
+                        <span class="tcg-move__name"><b>Email</b><small>${escapeHtml(config.contacts.email)}</small></span>
+                    </a>
+                    <a class="tcg-move contact-move" href="tel:${escapeHtml(config.contacts.phone)}">
+                        <span class="contact-icon">📱</span>
+                        <span class="tcg-move__name"><b>Phone</b><small>${escapeHtml(config.contacts.phone)}</small></span>
+                    </a>
+                    <div class="tcg-move contact-move">
+                        <span class="contact-icon">📍</span>
+                        <span class="tcg-move__name"><b>Location</b><small>${escapeHtml(config.contacts.location)}</small></span>
+                    </div>
+                </div>
+                <footer class="tcg-foot contact-social">
+                    ${socialLinks}
+                </footer>
+            </div>
+        </article>
+    `;
 
-    contactItems.forEach((item, index) => {
-        if (contactInfo[index]) {
-            const icon = item.querySelector('.contact-icon');
-            const label = item.querySelector('.contact-label');
-            const value = item.querySelector('.contact-value');
-
-            if (icon) icon.textContent = contactInfo[index].icon;
-            if (label) label.textContent = contactInfo[index].label;
-            if (value) value.textContent = contactInfo[index].value;
-        }
-    });
-
-    // Update social links
-    if (config.contacts?.social) {
-        const socialLinks = document.querySelector('.social-links');
-        if (socialLinks) {
-            socialLinks.innerHTML = '';
-
-            Object.entries(config.contacts.social).forEach(([platform, url]) => {
-                if (url && url !== '#') {
-                    const socialLink = document.createElement('a');
-                    socialLink.href = url;
-                    socialLink.className = 'social-link';
-                    socialLink.target = '_blank';
-
-                    const iconMap = {
-                        github: '🐙',
-                        linkedin: '💼',
-                        twitter: '🐦',
-                        instagram: '📷'
-                    };
-
-                    socialLink.innerHTML = `
-                        <div class="social-icon">${iconMap[platform] || '🔗'}</div>
-                        <span>${platform.charAt(0).toUpperCase() + platform.slice(1)}</span>
-                    `;
-
-                    socialLinks.appendChild(socialLink);
-                }
-            });
-        }
-    }
+    initCardInteractions();
 }
-
 // Initialize contact form functionality
 function initContactForm() {
     const contactForm = document.getElementById('contact-form');
@@ -758,211 +1176,321 @@ function updateAnimationSpeed(speed) {
 // DOM Content Loaded - Only runs in browser
 if (typeof document !== 'undefined') {
     document.addEventListener('DOMContentLoaded', function() {
+        // Wire the switch before anything starts moving.
+        initMotionToggle();
+
         // Populate content from configuration
         populateFromConfig();
-        
-        // Check if user prefers reduced motion
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        
-        if (config.theme?.animations?.enabled && !prefersReducedMotion) {
-            // Initialize all animations and interactions
+
+        // Build sequence first: it tags section headings for the reveal pass.
+        initBuildSequence();
+        equalizeGalleryCards();
+
+        const animate = motionEnabled() && config.theme?.animations?.enabled !== false;
+
+        if (animate) {
             initTypingAnimation();
+            initBioReveal();
             initCounterAnimation();
             initSmoothScrolling();
-            initScrollAnimations();
-            initButtonInteractions();
-            initSkillsAnimation();
+            initRevealObserver();
+            initRevealFallback();
+            initCardInteractions();
+            initParticleSwarm();
         } else {
-            // Fallback for no animations or reduced motion preference
+            initSmoothScrolling();
             initBasicInteractions();
+            settleAnimations();
+        }
+    });
+
+    // Stop painting the swarm while the tab is in the background.
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            stopParticleSwarm();
+        } else if (motionEnabled()) {
+            initParticleSwarm();
         }
     });
 }
 
-// Typing Animation for Hero Text and About Bio (Optimized)
+// Greeting typewriter — decorative only, and it never blocks navigation.
 function initTypingAnimation() {
-    const defaultTypingSpeed = config.theme?.animations?.typingSpeed || 100;
-    const greetingTypingSpeed = config.theme?.animations?.greetingTypingSpeed || defaultTypingSpeed;
-    const bioTypingSpeed = config.theme?.animations?.bioTypingSpeed || defaultTypingSpeed;
-    const greetingDelay = config.theme?.animations?.greetingTypingDelay || 500;
-    const bioDelay = config.theme?.animations?.bioTypingDelay || 1500;
+    const greeting = document.querySelector('.hero-greeting');
+    if (!greeting || !config.personal?.greeting) return;
 
-    // Hero greeting typing animation
-    if (config.personal?.greeting) {
-        const greeting = document.querySelector('.hero-greeting');
-        if (greeting) {
-            const originalText = config.personal.greeting;
-            greeting.textContent = '';
-            let i = 0;
-            const typeWriter = function() {
-                if (i < originalText.length) {
-                    greeting.textContent += originalText.charAt(i);
-                    i++;
-                    requestAnimationFrame(() => {
-                        setTimeout(typeWriter, greetingTypingSpeed);
-                    });
-                } else {
-                    // Typing completed
-                    isTypingActive = false;
-                }
-            };
+    const text = config.personal.greeting;
+    const speed = config.theme?.animations?.greetingTypingSpeed || 120;
+    const delay = config.theme?.animations?.greetingTypingDelay ?? 350;
 
-            // Mark typing as active
-            isTypingActive = true;
-            setTimeout(() => {
-                requestAnimationFrame(typeWriter);
-            }, greetingDelay);
+    if (!motionEnabled()) {
+        greeting.textContent = text;
+        return;
+    }
+
+    greeting.textContent = '';
+    let index = 0;
+
+    const type = () => {
+        if (!motionEnabled()) {
+            greeting.textContent = text;
+            return;
         }
-    }
+        if (index >= text.length) return;
+        greeting.textContent += text.charAt(index);
+        index += 1;
+        window.setTimeout(type, speed);
+    };
 
-    // About bio typing animation
-    const aboutDescription = document.querySelector('.about-description');
-    if (aboutDescription && aboutDescription.getAttribute('data-text')) {
-        const originalText = aboutDescription.getAttribute('data-text');
-        aboutDescription.textContent = '';
-
-        let i = 0;
-        const typeWriter = function() {
-            if (i < originalText.length) {
-                aboutDescription.textContent += originalText.charAt(i);
-                i++;
-                requestAnimationFrame(() => {
-                    setTimeout(typeWriter, bioTypingSpeed);
-                });
-            } else {
-                // Typing completed
-                isTypingActive = false;
-            }
-        };
-
-        // Start about bio typing after hero greeting completes (with delay)
-        setTimeout(() => {
-            // Mark typing as active before starting about section typing
-            isTypingActive = true;
-            requestAnimationFrame(typeWriter);
-        }, bioDelay);
-    }
+    window.setTimeout(type, delay);
 }
 
-// Counter Animation for Statistics
+// About bio — a fast word-by-word reveal that always ends fully visible.
+function initBioReveal() {
+    const bio = document.querySelector('.about-description');
+    if (!bio) return;
+
+    const text = (bio.dataset.fullText || bio.textContent || '').trim();
+    if (!text) return;
+
+    if (!motionEnabled()) {
+        bio.classList.remove('bio-typing');
+        bio.textContent = text;
+        return;
+    }
+
+    const words = text.split(/\s+/);
+    bio.innerHTML = words
+        .map((word, index) => `<span class="bio-word" style="--i:${index}">${escapeHtml(word)}</span>`)
+        .join(' ');
+    bio.classList.add('bio-typing');
+
+    if (bio.classList.contains('bio-in')) return;
+
+    if (!('IntersectionObserver' in window)) {
+        bio.classList.add('bio-in');
+        return;
+    }
+
+    if (bio.dataset.observed === 'true') {
+        const rect = bio.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) bio.classList.add('bio-in');
+        return;
+    }
+
+    bio.dataset.observed = 'true';
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            bio.classList.add('bio-in');
+            observer.disconnect();
+        });
+    }, { threshold: 0.2 });
+
+    observer.observe(bio);
+}
+
+// Counter animation for statistics
 function initCounterAnimation() {
     const counters = document.querySelectorAll('.stat-number');
-    
-    const animateCounter = (counter) => {
-        const target = parseInt(counter.getAttribute('data-target'));
-        const increment = target / 100;
-        let current = 0;
-        
-        const updateCounter = () => {
-            current += increment;
-            if (current < target) {
-                counter.textContent = Math.ceil(current) + (target > 100 ? '+' : '%');
-                setTimeout(updateCounter, 20);
-            } else {
-                counter.textContent = target + (target > 100 ? '+' : '%');
-            }
-        };
-        
-        updateCounter();
+    if (!counters.length) return;
+
+    const finish = (counter) => {
+        const target = Number(counter.getAttribute('data-target')) || 0;
+        counter.textContent = target + (counter.getAttribute('data-suffix') || '');
     };
-    
-    // Intersection Observer for counter animation
-    const counterObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                animateCounter(entry.target);
-                counterObserver.unobserve(entry.target);
+
+    if (!motionEnabled() || !('IntersectionObserver' in window)) {
+        counters.forEach(finish);
+        return;
+    }
+
+    const run = (counter) => {
+        if (counter.dataset.counted === 'true') return;
+        counter.dataset.counted = 'true';
+
+        const target = Number(counter.getAttribute('data-target')) || 0;
+        const suffix = counter.getAttribute('data-suffix') || '';
+        const duration = config.theme?.animations?.counterDuration || 1400;
+        const start = performance.now();
+
+        const step = (now) => {
+            if (!motionEnabled()) {
+                finish(counter);
+                return;
             }
+
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            counter.textContent = Math.round(target * eased) + suffix;
+
+            if (progress < 1) requestAnimationFrame(step);
+        };
+
+        requestAnimationFrame(step);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            run(entry.target);
+            observer.unobserve(entry.target);
         });
-    }, { threshold: 0.5 });
-    
-    counters.forEach(counter => {
-        counterObserver.observe(counter);
+    }, { threshold: 0.35 });
+
+    counters.forEach((counter) => {
+        // Never rewind a counter that already finished — toggling motion back on
+        // must not leave the statistic stranded at zero.
+        if (counter.dataset.counted !== 'true') {
+            counter.textContent = '0' + (counter.getAttribute('data-suffix') || '');
+        }
+        observer.observe(counter);
     });
 }
 
 // Smooth Scrolling for Navigation
 function initSmoothScrolling() {
-    const navLinks = document.querySelectorAll('.nav-link');
+    if (document.body.dataset.navBound !== 'true') {
+        document.body.dataset.navBound = 'true';
 
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            // Prevent navigation if typing animation is active
-            if (isTypingActive) {
-                e.preventDefault();
-                e.stopPropagation();
-                // Optional: Show a subtle notification that typing is in progress
-                showNotification('Please wait for the typing animation to complete', 'info');
-                return;
-            }
+        document.querySelectorAll('.nav-link').forEach((link) => {
+            link.addEventListener('click', (event) => {
+                const targetId = link.getAttribute('href');
+                if (!targetId || targetId.charAt(0) !== '#') return;
 
-            e.preventDefault();
-            const targetId = link.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
+                const targetSection = document.querySelector(targetId);
+                if (!targetSection) return;
 
-            if (targetSection) {
+                event.preventDefault();
                 targetSection.scrollIntoView({
-                    behavior: 'smooth',
+                    behavior: motionEnabled() ? 'smooth' : 'auto',
                     block: 'start'
                 });
-
-                // Update active nav link
                 updateActiveNavLink(link);
-            }
+            });
         });
-    });
-    
-    // Update active nav link on scroll
-    window.addEventListener('scroll', () => {
-        const sections = document.querySelectorAll('section[id]');
-        const scrollPos = window.scrollY + 100;
-        
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.offsetHeight;
-            const sectionId = section.getAttribute('id');
-            const navLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
-            
-            if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-                if (navLink) {
-                    updateActiveNavLink(navLink);
-                }
-            }
-        });
-    });
+    }
+
+    const sections = Array.from(document.querySelectorAll('section[id]'));
+    if (!sections.length) return;
+
+    if (document.body.dataset.sectionBound !== 'true') {
+        document.body.dataset.sectionBound = 'true';
+
+        let ticking = false;
+        const syncActiveSection = () => {
+            ticking = false;
+            const probe = window.scrollY + 140;
+            let current = sections[0];
+
+            sections.forEach((section) => {
+                if (section.offsetTop <= probe) current = section;
+            });
+
+            const link = document.querySelector(`.nav-link[href="#${current.id}"]`);
+            if (link && !link.classList.contains('active')) updateActiveNavLink(link);
+        };
+
+        window.addEventListener('scroll', () => {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(syncActiveSection);
+        }, { passive: true });
+
+        syncActiveSection();
+    }
 }
 
 function updateActiveNavLink(activeLink) {
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => link.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach((link) => {
+        link.classList.remove('active');
+        link.removeAttribute('aria-current');
+    });
+
     activeLink.classList.add('active');
+    activeLink.setAttribute('aria-current', 'true');
 }
 
-// Scroll Animations using Intersection Observer
-function initScrollAnimations() {
-    const animatedElements = document.querySelectorAll('.service-item, .about-title, .about-description');
-    
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
+// Scroll reveals: class toggles only, one observer, no per-frame layout reads.
+function initRevealObserver() {
+    const elements = Array.from(document.querySelectorAll('[data-reveal]'));
+    if (!elements.length) return;
+
+    if (!motionEnabled() || !('IntersectionObserver' in window)) {
+        elements.forEach((element) => element.classList.add('is-visible'));
+        return;
+    }
+
+    document.documentElement.classList.add('reveal-init');
+
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-                observer.unobserve(entry.target);
-            }
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
         });
-    }, observerOptions);
-    
-    animatedElements.forEach(element => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(30px)';
-        element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+    elements.forEach((element) => {
+        if (element.classList.contains('is-visible')) return;
         observer.observe(element);
     });
+
+    // Safety net: anything already on screen must never stay hidden, even if
+    // an observer callback or its transition is missed.
+    window.setTimeout(() => {
+        elements.forEach((element) => {
+            const rect = element.getBoundingClientRect();
+            const inView = rect.top < window.innerHeight && rect.bottom > 0;
+            if (!inView) return;
+            if (parseFloat(getComputedStyle(element).opacity) > 0.6) return;
+
+            // Drop the transition first: a paused one would otherwise hold the
+            // old opacity and keep the element invisible.
+            element.style.transition = 'none';
+            element.classList.add('is-visible');
+            element.style.opacity = '1';
+            element.style.transform = 'none';
+        });
+    }, 900);
+}
+
+// Belt-and-braces pass: the same rules as the observers, applied on scroll, so
+// a missed observer tick can never leave a section invisible.
+function initRevealFallback() {
+    if (document.body.dataset.revealFallback === 'true') return;
+    document.body.dataset.revealFallback = 'true';
+
+    let queued = false;
+
+    const pass = () => {
+        queued = false;
+        const vh = window.innerHeight;
+
+        document.querySelectorAll('[data-reveal]:not(.is-visible)').forEach((element) => {
+            const rect = element.getBoundingClientRect();
+            if (rect.top < vh - 40 && rect.bottom > 0) {
+                element.classList.add('is-visible');
+            }
+        });
+
+        document.querySelectorAll('.build-section:not(.is-built)').forEach((section) => {
+            const rect = section.getBoundingClientRect();
+            if (rect.top < vh && rect.bottom > 0) {
+                section.classList.add('is-built', 'is-building');
+                window.setTimeout(() => section.classList.remove('is-building'), 1500);
+            }
+        });
+    };
+
+    window.addEventListener('scroll', () => {
+        if (queued) return;
+        queued = true;
+        window.requestAnimationFrame(pass);
+    }, { passive: true });
+
+    window.addEventListener('resize', pass, { passive: true });
 }
 
 // Button Interactions
@@ -1005,66 +1533,11 @@ function initButtonInteractions() {
     });
 }
 
-// Skills Animation Enhancement
-function initSkillsAnimation() {
-    const skillsSection = document.querySelector('.skills');
-    const skillItems = document.querySelectorAll('.skill-item');
-    
-    // Pause animation on hover
-    skillsSection.addEventListener('mouseenter', () => {
-        skillItems.forEach(item => {
-            item.style.animationPlayState = 'paused';
-        });
-    });
-    
-    skillsSection.addEventListener('mouseleave', () => {
-        skillItems.forEach(item => {
-            item.style.animationPlayState = 'running';
-        });
-    });
-}
-
-// Initialize skills animation
-document.addEventListener('DOMContentLoaded', function() {
-    initSkillsAnimation();
-});
-
-// Add CSS for ripple effect
-const style = document.createElement('style');
-style.textContent = `
-    .btn {
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .ripple {
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        transform: scale(0);
-        animation: ripple-animation 0.6s linear;
-        pointer-events: none;
-    }
-    
-    @keyframes ripple-animation {
-        to {
-            transform: scale(4);
-            opacity: 0;
-        }
-    }
-    
-    .skill-item {
-        animation: scroll 30s linear infinite;
-    }
-    
-    .skills:hover .skill-item {
-        animation-play-state: paused;
-    }
-`;
-document.head.appendChild(style);
+// NOTE: the legacy marquee skill strip (.skills-scroll) was removed in v3 —
+// every skill is now a trading-card move instead of an endlessly scrolling chip.
 
 // Performance optimization: Throttle scroll events
-function throttle(func, limit) {
+const throttle = (func, limit) => {
     let inThrottle;
     return function() {
         const args = arguments;
@@ -1075,11 +1548,30 @@ function throttle(func, limit) {
             setTimeout(() => inThrottle = false, limit);
         }
     }
-}
+};
 
-// Apply throttling to scroll events
+// Performance optimization: Debounce resize events
+const debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+};
+
+// Optimize scroll events
+let lastScrollTop = 0;
 window.addEventListener('scroll', throttle(() => {
-    // Scroll-based animations can be added here if needed
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    // Only trigger if scroll direction changed
+    if (Math.abs(scrollTop - lastScrollTop) > 5) {
+        lastScrollTop = scrollTop;
+        // Scroll-based animations can be added here
+    }
 }, 16));
 
 // Add loading animation
@@ -1160,7 +1652,7 @@ function populateGallery() {
         const galleryItem = document.createElement('div');
         galleryItem.className = `gallery-item ${index === 0 ? 'active' : ''}`;
         galleryItem.innerHTML = `
-            <img src="${image.src}" alt="${image.alt}">
+            <img src="${image.src}" alt="${image.alt}" loading="lazy" width="600" height="400">
             <div class="gallery-caption">${image.caption}</div>
         `;
         galleryScroll.appendChild(galleryItem);
@@ -1187,27 +1679,47 @@ function populateReferences() {
 
     referencesGrid.innerHTML = '';
 
-    config.references.list.forEach(reference => {
-        const referenceCard = document.createElement('div');
-        referenceCard.className = 'reference-card';
+    const allyTypes = ['grass', 'water', 'psychic', 'steel'];
+
+    config.references.list.forEach((reference, index) => {
+        const referenceCard = document.createElement('article');
+        referenceCard.className = 'reference-card tcg-card tcg-card--tab';
+        referenceCard.dataset.type = allyTypes[index % allyTypes.length];
+        referenceCard.dataset.reveal = '';
+        referenceCard.style.setProperty('--reveal-delay', `${index * 80}ms`);
 
         referenceCard.innerHTML = `
-            <div class="reference-image">
-                <img src="${reference.image}" alt="${reference.name}" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face'">
-            </div>
-            <div class="reference-content">
-                <h3 class="reference-name">${reference.name}</h3>
-                <p class="reference-title">${reference.title}</p>
-                <p class="reference-relationship">${reference.relationship}</p>
-                <div class="reference-contact">
-                    <div class="contact-info">${reference.email}</div>
-                    <div class="contact-info">${reference.phone}</div>
+            <div class="tcg-card__inner">
+                <span class="tcg-card__holo" aria-hidden="true"></span>
+                <header class="tcg-top">
+                    <span class="tcg-stage">Ally</span>
+                    <h3 class="tcg-name">${escapeHtml(reference.name)}</h3>
+                </header>
+                ${cardArt(reference.image, reference.name, {
+                    icon: '🎓',
+                    badge: '🎓 Ally',
+                    rarity: escapeHtml(reference.relationship),
+                    extraClass: 'tcg-art--portrait'
+                })}
+                <div class="reference-title">${escapeHtml(reference.title)}</div>
+                <div class="tcg-moves reference-moves">
+                    <div class="tcg-move">
+                        <span class="tcg-move__name">${escapeHtml(reference.email)}</span>
+                    </div>
+                    <div class="tcg-move">
+                        <span class="tcg-move__name">${escapeHtml(reference.phone)}</span>
+                    </div>
                 </div>
+                <footer class="tcg-foot">
+                    <span><b>Role</b> ${escapeHtml(reference.relationship)}</span>
+                </footer>
             </div>
         `;
 
         referencesGrid.appendChild(referenceCard);
     });
+
+    initCardInteractions();
 }
 
 // Gallery functionality
@@ -1286,7 +1798,7 @@ function populateProjectGallery() {
             <div class="timeline-dot"></div>
             <div class="timeline-content">
                 <div class="timeline-image">
-                    <img src="${project.image}" alt="${project.title}">
+                    <img src="${project.image}" alt="${project.title}" loading="lazy" width="300" height="200">
                 </div>
                 <div class="timeline-details">
                     <h3 class="timeline-title">${project.title}</h3>
@@ -1295,8 +1807,8 @@ function populateProjectGallery() {
                         ${project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
                     </div>
                     <div class="timeline-links">
-                        <a href="${project.githubLink}" class="project-link" target="_blank">View Code</a>
-                        <a href="${project.demoLink}" class="project-link" target="_blank">Watch Demo</a>
+                        <a href="${project.githubLink}" class="project-link" target="_blank" rel="noopener noreferrer">View Code</a>
+                        <a href="${project.demoLink}" class="project-link" target="_blank" rel="noopener noreferrer">Watch Demo</a>
                     </div>
                 </div>
             </div>
@@ -1325,35 +1837,53 @@ function populateVideoLinks() {
     if (youtubeVideos.length > 0) {
         youtubeVideos.forEach((video, originalIndex) => {
             const videoCard = document.createElement('div');
-            videoCard.className = 'youtube-video-card';
+            videoCard.className = 'youtube-video-card tcg-card tcg-card--tab';
+            videoCard.dataset.type = ['electric', 'water', 'psychic'][originalIndex % 3];
+            videoCard.dataset.reveal = '';
+            videoCard.style.setProperty('--reveal-delay', `${originalIndex * 70}ms`);
 
             // Generate unique iframe ID for each video tile
             const tileIframeId = `youtube-tile-${originalIndex}`;
 
             videoCard.innerHTML = `
-                <div class="video-container">
-                    <iframe
-                        id="${tileIframeId}"
-                        class="video-iframe"
-                        src="https://www.youtube.com/embed/${video.videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${video.videoId}&modestbranding=1"
-                        title="${video.title}"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                    </iframe>
-                    <!-- Modal overlay -->
-                    <div class="video-overlay" onclick="openYouTubeModal('${video.title}', '${video.description}', '${video.videoId}')">
-                        <button class="video-play-btn">
-                            <span class="play-icon">▶</span>
-                            <span class="platform-badge">Watch Full Video</span>
-                        </button>
+                <div class="tcg-card__inner">
+                    <span class="tcg-card__holo" aria-hidden="true"></span>
+                    <header class="tcg-top">
+                        <span class="tcg-stage">Clip</span>
+                        <h3 class="tcg-name">${escapeHtml(video.title)}</h3>
+                    </header>
+                    <div class="video-container tcg-art tcg-art--video">
+                        <iframe
+                            id="${tileIframeId}"
+                            class="video-iframe"
+                            src="https://www.youtube.com/embed/${video.videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${video.videoId}&modestbranding=1"
+                            title="${escapeHtml(video.title)}"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                        <div class="video-overlay">
+                            <button class="video-play-btn">
+                                <span class="play-icon">▶</span>
+                                <span class="platform-badge">Watch Full Video</span>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="youtube-video-content">
-                    <h3 class="youtube-video-title">${video.title}</h3>
-                    <p class="youtube-video-description">${video.description}</p>
+                    <p class="tcg-text">${escapeHtml(video.description)}</p>
+                    <footer class="tcg-foot">
+                        <span><b>Source</b> YouTube</span>
+                        <span><b>Mode</b> Full demo</span>
+                    </footer>
                 </div>
             `;
+
+            // Bind in JS so titles/descriptions can never break an inline handler.
+            const overlay = videoCard.querySelector('.video-overlay');
+            if (overlay) {
+                overlay.addEventListener('click', () => {
+                    openYouTubeModal(video.title, video.description, video.videoId);
+                });
+            }
 
             videoLinksGrid.appendChild(videoCard);
         });
@@ -2138,4 +2668,5 @@ function updateFavicon() {
     }
 }
 
-// Clean, production-ready code - no testing exports needed
+// =====================================================
+// PARTICLE SWARM (rebuilt)

@@ -1,14 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-motion="on">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // Resolve the animation preference before first paint (no flash of motion).
+        (function () {
+            try {
+                var saved = localStorage.getItem('motionEnabled');
+                var enabled = saved === null ? true : saved === 'true';
+                document.documentElement.setAttribute('data-motion', enabled ? 'on' : 'off');
+            } catch (error) {
+                document.documentElement.setAttribute('data-motion', 'on');
+            }
+        })();
+    </script>
     <title id="page-title">Lloyd Enterina Agonia - Robotics Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://media.istockphoto.com">
+    <link rel="dns-prefetch" href="https://www.youtube.com">
+    <link rel="dns-prefetch" href="https://www.tiktok.com">
+    <link rel="preload" as="image" href="/images/profile.jpg" fetchpriority="high">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="portfolio-config.js"></script>
 </head>
 <body>
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
@@ -23,6 +42,10 @@
                         <!-- Theme toggle buttons will be populated by JavaScript -->
                     </div>
                 </div>
+                <!-- Animation Toggle -->
+                <button class="motion-toggle" id="motion-toggle" type="button" aria-pressed="true" aria-label="Turn animations off" title="Turn animations off">
+                    <span class="motion-toggle__icon" aria-hidden="true">✦</span>
+                </button>
             </div>
             <!-- Mobile Menu Toggle -->
             <button class="mobile-menu-toggle" id="mobile-menu-toggle">
@@ -47,7 +70,7 @@
                 <div class="hero-image">
                     <div class="profile-container">
                         <div class="profile-bg"></div>
-                        <img src="https://media.istockphoto.com/id/1393750072/vector/flat-white-icon-man-for-web-design-silhouette-flat-illustration-vector-illustration-stock.jpg?s=612x612&w=0&k=20&c=s9hO4SpyvrDIfELozPpiB_WtzQV9KhoMUP9R9gVohoU=" alt="profile-img" class="profile-img">
+                        <img src="/images/profile.jpg" alt="profile-img" class="profile-img" fetchpriority="high" decoding="async" width="300" height="300">
                     </div>
                 </div>
             </div>
@@ -64,6 +87,7 @@
                     </div>
                 </div>
                 <div class="about-right">
+                    <div class="about-eyebrow">Profile</div>
                     <h2 class="about-title" id="about-title">About me</h2>
                     <p class="about-description" id="about-description">
                         I am a versatile tech professional with a strong background in software development, robotics, and network engineering. With a BS in Electro-Mechanical Technology, major in Robotics and Mechatronics, I bring a solid academic foundation to my hands-on expertise. Proficient in Python and C, I have worked on various robotics projects, integrating IoT and programming microcontrollers to create innovative solutions. I excel at diagnosing and resolving computer system issues while adapting to diverse environments. My expertise includes cloud computing (AWS), Kubernetes for managing containerized applications, and configuring MikroTik devices. Additionally, I specialize in building and maintaining network servers to ensure security, efficiency, and scalability.
@@ -85,15 +109,6 @@
             </div>
             <div class="technical-skills-grid">
                 <!-- Technical skills will be populated by JavaScript -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Skills Section (Legacy) -->
-    <section class="skills">
-        <div class="skills-container">
-            <div class="skills-scroll">
-                <!-- Skills will be populated by JavaScript -->
             </div>
         </div>
     </section>
@@ -242,17 +257,17 @@
             </div>
 
             <div class="social-links">
-                <a href="https://github.com/djdark08" class="social-link" target="_blank">
+                <a href="https://github.com/djdark08" class="social-link" target="_blank" rel="noopener noreferrer">
                     <div class="social-icon">🐙</div>
                     <span>GitHub</span>
                 </a>
 
-                <a href="https://linkedin.com/in/lloydagonia" class="social-link" target="_blank">
+                <a href="https://www.linkedin.com/in/lloyd-agonia-573300308/" class="social-link" target="_blank" rel="noopener noreferrer">
                     <div class="social-icon">💼</div>
                     <span>LinkedIn</span>
                 </a>
 
-                <a href="https://facebook.com/lloydagonia" class="social-link" target="_blank">
+                <a href="https://www.facebook.com/agonialloyd/" class="social-link" target="_blank" rel="noopener noreferrer">
                     <div class="social-icon">📘</div>
                     <span>Facebook</span>
                 </a>
