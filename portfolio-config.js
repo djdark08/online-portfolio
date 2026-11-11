@@ -261,15 +261,6 @@ const portfolioConfig = {
             bioTypingDelay: 1500,
             fadeInDelay: 100,
             scrollThrottle: 16,
-            particleSwarm: {
-                enabled: true,
-                defaultOn: true,
-                count: 72,
-                speed: 0.6,
-                size: 1.8,
-                linkDistance: 130,
-                pointerRadius: 150
-            }
         }
     },
 

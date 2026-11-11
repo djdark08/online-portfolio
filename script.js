@@ -14,7 +14,7 @@ if (typeof window !== 'undefined' && window.portfolioConfig) {
 // MOTION CONTROLLER
 // =====================================================
 // One switch drives every animation on the page: CSS keyframes, scroll
-// reveals, the typewriter, the counters and the particle swarm.
+// reveals, the typewriter and the counters.
 
 const MOTION_STORAGE_KEY = 'motionEnabled';
 
@@ -66,9 +66,7 @@ function setMotion(enabled, options) {
         initRevealObserver();
         initRevealFallback();
         initCardInteractions();
-        initParticleSwarm();
     } else {
-        stopParticleSwarm();
         settleAnimations();
     }
 }
@@ -330,9 +328,6 @@ function switchToTheme(themeKey) {
             applyThemeColors(colors);
         }
     }
-
-    // The swarm re-reads the accent colour on the next frame
-    swarmState.palette = null;
 
     // Reflect the new theme on the cycle button
     updateThemeCycleButton(themeKey);
@@ -1196,7 +1191,6 @@ if (typeof document !== 'undefined') {
             initRevealObserver();
             initRevealFallback();
             initCardInteractions();
-            initParticleSwarm();
         } else {
             initSmoothScrolling();
             initBasicInteractions();
@@ -1204,14 +1198,6 @@ if (typeof document !== 'undefined') {
         }
     });
 
-    // Stop painting the swarm while the tab is in the background.
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            stopParticleSwarm();
-        } else if (motionEnabled()) {
-            initParticleSwarm();
-        }
-    });
 }
 
 // Greeting typewriter — decorative only, and it never blocks navigation.
@@ -2667,6 +2653,3 @@ function updateFavicon() {
         document.head.appendChild(favicon);
     }
 }
-
-// =====================================================
-// PARTICLE SWARM (rebuilt)
