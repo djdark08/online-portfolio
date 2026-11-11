@@ -1430,7 +1430,9 @@ function initRevealObserver() {
             const rect = element.getBoundingClientRect();
             const inView = rect.top < window.innerHeight && rect.bottom > 0;
             if (!inView) return;
-            if (parseFloat(getComputedStyle(element).opacity) > 0.6) return;
+            // A pending transition can still report full opacity, so trust the
+            // reveal class first and the computed value only as a fallback.
+            if (element.classList.contains('is-visible') && parseFloat(getComputedStyle(element).opacity) > 0.6) return;
 
             // Drop the transition first: a paused one would otherwise hold the
             // old opacity and keep the element invisible.
