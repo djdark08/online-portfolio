@@ -3171,19 +3171,10 @@ body.modal-open {
     z-index: 1;
 }
 
-@media (prefers-reduced-motion: reduce) {
-}
-
 /* Print Styles */
-@media print {
-    .navbar,
-    .hero-buttons,
-    .video-custom-controls,
-    .video-modal,
-    .tiktok-phone-container,
-}
+
 /* ==========================================================================
-   V3 — MOTION SWITCH · TRADING-CARD UI · REBUILT SWARM
+   V3 — MOTION SWITCH · TRADING-CARD UI
    Appended deliberately last so it wins over earlier section rules.
    ========================================================================== */
 
@@ -4151,7 +4142,7 @@ html[data-motion="off"] .build-section.is-building::after {
 }
 
 /* ==========================================================================
-   V5 — NO SCORES · FLUID NAV · CARD HOVER · SWARM REBUILD
+   V5 — NO SCORES · FLUID NAV · CARD HOVER · TILT
    ========================================================================== */
 
 /* ---------- 17. Icon-only motion toggle ----------------------------------- */
