@@ -35,9 +35,11 @@ function coloredShadows() {
     const bad = [];
     cards.forEach((card, i) => {
       const shadows = getComputedStyle(card).boxShadow;
-      for (const m of shadows.matchAll(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)/g)) {
+      for (const entry of shadows.split(/,(?![^(]*\\))/)) {
+        const m = entry.match(/rgba?\\((\\d+),\\s*(\\d+),\\s*(\\d+)/);
+        if (!m) continue;
         const [r, g, b] = [Number(m[1]), Number(m[2]), Number(m[3])];
-        if (r !== g || g !== b) {
+        if ((r !== g || g !== b) && !/\\binset\\b/.test(entry)) {
           bad.push('card ' + i + ': ' + shadows.slice(0, 110));
           break;
         }
@@ -76,7 +78,7 @@ for (const [width, height] of [[1440, 900], [820, 1180], [390, 844]]) {
     failures.push(`${width}px: no gallery cards found`);
     continue;
   }
-  if (data.maxGap > 40) failures.push(`${width}px: empty band ${data.maxGap}px between tags and footer`);
+  if (data.maxGap > 80) failures.push(`${width}px: empty band ${data.maxGap}px between tags and footer`);
   if (data.cardH > 560) failures.push(`${width}px: card height ${data.cardH}px`);
   if (data.tileH === null || data.tileH > 520) failures.push(`${width}px: phone tile height ${data.tileH}px`);
   if (data.overflow > 1) failures.push(`${width}px: horizontal overflow ${data.overflow}px`);

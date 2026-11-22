@@ -4538,16 +4538,21 @@ html[data-motion="off"] .bio-word {
 .projects-grid .gallery-phone-tile {
     --phone-pad: 0.35rem;
     --phone-radius: 15px;
+    --phone-max-h: 480px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
+    max-height: var(--phone-max-h);
     min-width: 0;
     padding: var(--phone-pad);
     border: 1px solid var(--border-color);
     border-radius: var(--phone-radius);
     background-color: var(--card-bg);
+    background-image:
+        radial-gradient(120% 80% at 50% 0%, rgba(255, 255, 255, 0.09), transparent 62%),
+        linear-gradient(165deg, var(--card-bg) 0%, var(--bg-color) 100%);
     align-self: stretch;
 }
 
@@ -4560,6 +4565,10 @@ html[data-motion="off"] .bio-word {
     aspect-ratio: 425 / 900;
     margin: 0;
     flex: none;
+    box-shadow:
+        0 18px 40px -24px rgba(0, 0, 0, 0.85),
+        0 0 0 1px color-mix(in srgb, var(--accent-color) 35%, transparent),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.02);
 }
 
 /* ---------- 24. Every card deals in with its own stagger ------------------ */
@@ -4606,8 +4615,7 @@ html[data-motion="off"] .tcg-card[data-reveal] {
 .tcg-card[data-reveal]:focus-visible {
     box-shadow:
         0 26px 54px -30px rgba(0, 0, 0, 0.95),
-        0 0 0 1px var(--type-glow, rgba(255, 107, 97, 0.45)),
-        0 0 30px -4px var(--type-glow, rgba(255, 107, 97, 0.45));
+        inset 0 0 0 1px var(--type-glow, rgba(255, 107, 97, 0.45));
 }
 
 #radiation-canvas {
