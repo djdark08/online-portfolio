@@ -313,6 +313,23 @@ body {
     transform: translateY(-1px);
 }
 
+.noscript-summary {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    color: var(--text-primary);
+}
+
+.noscript-summary h2,
+.noscript-summary h3 {
+    color: var(--accent-color);
+    margin-top: 1.5rem;
+}
+
+.noscript-summary a {
+    color: var(--accent-color);
+}
+
 .highlight {
     color: var(--accent-color);
     position: relative;

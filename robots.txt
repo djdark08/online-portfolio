@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lloydagonia.is-a.dev/sitemap.xml
