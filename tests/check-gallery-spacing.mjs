@@ -80,7 +80,7 @@ for (const [width, height] of [[1440, 900], [820, 1180], [390, 844]]) {
   }
   if (data.maxGap > 80) failures.push(`${width}px: empty band ${data.maxGap}px between tags and footer`);
   if (data.cardH > 560) failures.push(`${width}px: card height ${data.cardH}px`);
-  if (data.tileH === null || data.tileH > 520) failures.push(`${width}px: phone tile height ${data.tileH}px`);
+  if (data.tileH === null || data.tileH <= data.cardH) failures.push(`${width}px: phone tile ${data.tileH}px is not taller than card ${data.cardH}px`);
   if (data.overflow > 1) failures.push(`${width}px: horizontal overflow ${data.overflow}px`);
 
   for (const bad of coloredShadows()) failures.push(`${width}px: colored glow ${bad}`);

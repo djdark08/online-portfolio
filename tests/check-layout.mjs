@@ -48,8 +48,8 @@ for (const [width, height] of [[1440, 900], [820, 1180], [390, 844]]) {
 
   if (geometry.phone === null || geometry.card === null) {
     failures.push(`${width}px: gallery cards missing`);
-  } else if (Math.abs(geometry.phone - geometry.card) > 24) {
-    failures.push(`${width}px: phone tile ${geometry.phone}px vs card ${geometry.card}px`);
+  } else if (geometry.phone <= geometry.card) {
+    failures.push(`${width}px: phone tile ${geometry.phone}px is not taller than card ${geometry.card}px`);
   }
   if (geometry.overflow > 1) {
     failures.push(`${width}px: horizontal overflow ${geometry.overflow}px`);

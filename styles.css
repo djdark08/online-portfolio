@@ -4400,8 +4400,8 @@ html[data-motion="off"] .build-section.is-building::after {
 /* ---------- 19. Equal-size gallery cards ---------------------------------- */
 
 .projects-grid {
-    grid-auto-rows: 1fr;
-    align-items: stretch;
+    grid-auto-rows: auto;
+    align-items: start;
 }
 
 .project-card.tcg-card {
@@ -4539,32 +4539,24 @@ html[data-motion="off"] .bio-word {
 /* ---------- 23. TikTok phone fits its tile -------------------------------- */
 
 .projects-grid .gallery-phone-tile {
-    --phone-pad: 0.35rem;
-    --phone-radius: 15px;
-    --phone-max-h: 480px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
+    grid-row: span 2;
     height: 100%;
-    max-height: var(--phone-max-h);
     min-width: 0;
-    padding: var(--phone-pad);
-    border: 1px solid var(--border-color);
-    border-radius: var(--phone-radius);
-    background-color: var(--card-bg);
-    background-image:
-        radial-gradient(120% 80% at 50% 0%, rgba(255, 255, 255, 0.09), transparent 62%),
-        linear-gradient(165deg, var(--card-bg) 0%, var(--bg-color) 100%);
+    padding: 0;
+    border: 0;
+    background: none;
     align-self: stretch;
 }
 
 .projects-grid .gallery-tiktok-phone .iphone-container {
     box-sizing: border-box;
-    width: auto;
-    height: 100%;
-    max-width: 100%;
-    max-height: 100%;
+    width: min(100%, 425px);
+    height: auto;
+    max-height: 900px;
     aspect-ratio: 425 / 900;
     margin: 0;
     flex: none;

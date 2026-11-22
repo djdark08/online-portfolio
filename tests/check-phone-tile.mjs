@@ -69,9 +69,9 @@ for (const [width, height] of [[1440, 900], [820, 1180], [390, 844]]) {
   if (!data.dedicated) failures.push(`${width}px: phone tile lacks its dedicated class`);
   if (data.isCard) failures.push(`${width}px: phone tile still inherits .project-card sizing`);
   if (!data.hasVideo) failures.push(`${width}px: TikTok videos missing from phone tile`);
-  if (data.padding < 4) failures.push(`${width}px: phone tile has no inner padding (${data.padding}px)`);
-  if (Math.abs(data.tileH - data.cardH) > 24) {
-    failures.push(`${width}px: phone tile ${data.tileH}px vs card ${data.cardH}px`);
+  if (data.padding !== 0) failures.push(`${width}px: phone tile has inner padding (${data.padding}px), expected none`);
+  if (data.tileH <= data.cardH) {
+    failures.push(`${width}px: phone tile ${data.tileH}px is not taller than card ${data.cardH}px`);
   }
   if (!data.boxFits) failures.push(`${width}px: phone frame overflows its tile`);
   if (data.overflow > 1) failures.push(`${width}px: horizontal overflow ${data.overflow}px`);
@@ -81,4 +81,4 @@ if (failures.length) {
   console.error('FAIL:\n' + failures.join('\n'));
   process.exit(1);
 }
-console.log('PASS: dedicated padded phone tile aligned with cards at 1440/820/390');
+console.log('PASS: dedicated full-size phone tile at 1440/820/390');
