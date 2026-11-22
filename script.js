@@ -929,7 +929,7 @@ function populateProjectsWithTikTok() {
                 </div>
                 <footer class="tcg-foot">
                     <span><b>Type</b> ${project.featured ? 'Flagship' : 'Project'}</span>
-                    <a class="tcg-foot__link" href="${project.link}" target="_blank" rel="noopener noreferrer">Open ↗</a>
+                    <button type="button" class="tcg-foot__link" data-project-index="${index}" aria-label="View details for ${escapeHtml(project.name)}">Open ↗</button>
                 </footer>
             </div>
         </article>`;
@@ -2318,6 +2318,76 @@ function initVideoPreviews(youtubeVideos) {
 
     // Also create the modal HTML
     createVideoModal();
+    initProjectDetailModal();
+}
+
+// Project detail modal, styled from the existing video modal language
+function initProjectDetailModal() {
+    if (document.getElementById('project-detail-modal')) return;
+
+    document.body.insertAdjacentHTML('beforeend', `
+        <div id="project-detail-modal" class="video-modal project-detail-modal" role="dialog" aria-modal="true" aria-labelledby="project-detail-title">
+            <div class="video-modal-backdrop" id="project-detail-backdrop"></div>
+            <div class="video-modal-content">
+                <button type="button" class="video-modal-close" id="project-detail-close" aria-label="Close project details">✕</button>
+                <div class="project-detail-image-wrap">
+                    <img id="project-detail-image" src="" alt="">
+                </div>
+                <div class="video-modal-info">
+                    <h3 class="video-modal-title" id="project-detail-title"></h3>
+                    <p class="video-modal-description" id="project-detail-description"></p>
+                    <div class="project-detail-tech" id="project-detail-tech"></div>
+                </div>
+            </div>
+        </div>
+    `);
+
+    const modal = document.getElementById('project-detail-modal');
+    let lastTrigger = null;
+
+    const closeProjectDetail = () => {
+        modal.classList.remove('active');
+        document.body.classList.remove('modal-open');
+        if (lastTrigger && typeof lastTrigger.focus === 'function') lastTrigger.focus();
+        lastTrigger = null;
+    };
+
+    document.getElementById('project-detail-backdrop').addEventListener('click', closeProjectDetail);
+    document.getElementById('project-detail-close').addEventListener('click', closeProjectDetail);
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && modal.classList.contains('active')) closeProjectDetail();
+    });
+
+    document.addEventListener('click', (event) => {
+        const trigger = event.target.closest('.tcg-foot__link[data-project-index]');
+        if (!trigger) return;
+        event.preventDefault();
+        lastTrigger = trigger;
+        openProjectDetail(Number(trigger.dataset.projectIndex));
+    });
+}
+
+function openProjectDetail(index) {
+    const modal = document.getElementById('project-detail-modal');
+    const project = config.projects?.list?.[index];
+    if (!modal || !project) return;
+
+    const image = document.getElementById('project-detail-image');
+    const title = document.getElementById('project-detail-title');
+    const description = document.getElementById('project-detail-description');
+    const tech = document.getElementById('project-detail-tech');
+
+    image.src = project.image || '';
+    image.alt = project.name || '';
+    title.textContent = project.name || '';
+    description.textContent = project.description || '';
+    tech.innerHTML = (project.technologies || [])
+        .map(item => `<span class="tech-tag">${escapeHtml(item)}</span>`)
+        .join('');
+
+    modal.classList.add('active');
+    document.body.classList.add('modal-open');
+    document.getElementById('project-detail-close').focus();
 }
 
 // Create video modal HTML structure

@@ -2104,6 +2104,33 @@ body:not(.loaded) * {
     visibility: visible;
 }
 
+.project-detail-modal .video-modal-content {
+    width: min(90vw, 720px);
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 15px;
+}
+
+.project-detail-image-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.project-detail-image-wrap img {
+    max-width: 100%;
+    max-height: 55vh;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.project-detail-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
 .video-modal-backdrop {
     position: absolute;
     top: 0;
