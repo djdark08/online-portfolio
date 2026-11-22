@@ -1177,6 +1177,7 @@ if (typeof document !== 'undefined') {
 
         // Populate content from configuration
         populateFromConfig();
+        initProjectDetailModal();
 
         // Build sequence first: it tags section headings for the reveal pass.
         initBuildSequence();
@@ -1384,11 +1385,14 @@ function initSmoothScrolling() {
             if (link && !link.classList.contains('active')) updateActiveNavLink(link);
         };
 
-        window.addEventListener('scroll', () => {
+        const scheduleSync = () => {
             if (ticking) return;
             ticking = true;
             requestAnimationFrame(syncActiveSection);
-        }, { passive: true });
+        };
+
+        window.addEventListener('scroll', scheduleSync, { passive: true });
+        window.addEventListener('resize', scheduleSync, { passive: true });
 
         syncActiveSection();
     }
@@ -2319,7 +2323,6 @@ function initVideoPreviews(youtubeVideos) {
 
     // Also create the modal HTML
     createVideoModal();
-    initProjectDetailModal();
 }
 
 // Project detail modal, styled from the existing video modal language
@@ -2349,6 +2352,7 @@ function initProjectDetailModal() {
     const closeProjectDetail = () => {
         modal.classList.remove('active');
         document.body.classList.remove('modal-open');
+        setProjectModalBackgroundInert(false);
         if (lastTrigger && typeof lastTrigger.focus === 'function') lastTrigger.focus();
         lastTrigger = null;
     };
@@ -2356,7 +2360,28 @@ function initProjectDetailModal() {
     document.getElementById('project-detail-backdrop').addEventListener('click', closeProjectDetail);
     document.getElementById('project-detail-close').addEventListener('click', closeProjectDetail);
     document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && modal.classList.contains('active')) closeProjectDetail();
+        if (!modal.classList.contains('active')) return;
+
+        if (event.key === 'Escape') {
+            closeProjectDetail();
+            return;
+        }
+
+        if (event.key !== 'Tab') return;
+        const focusable = [...modal.querySelectorAll('button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')];
+        if (!focusable.length) {
+            event.preventDefault();
+            return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
     });
 
     document.addEventListener('click', (event) => {
@@ -2365,6 +2390,16 @@ function initProjectDetailModal() {
         event.preventDefault();
         lastTrigger = trigger;
         openProjectDetail(Number(trigger.dataset.projectIndex));
+    });
+}
+
+// Keep keyboard and assistive focus inside the dialog while it is open.
+function setProjectModalBackgroundInert(inert) {
+    const modal = document.getElementById('project-detail-modal');
+    if (!modal) return;
+    [...document.body.children].forEach((el) => {
+        if (el === modal || el.tagName === 'SCRIPT') return;
+        el.inert = inert;
     });
 }
 
@@ -2386,6 +2421,7 @@ function openProjectDetail(index) {
         .map(item => `<span class="tech-tag">${escapeHtml(item)}</span>`)
         .join('');
 
+    setProjectModalBackgroundInert(true);
     modal.classList.add('active');
     document.body.classList.add('modal-open');
     document.getElementById('project-detail-close').focus();
@@ -2695,6 +2731,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Update favicon based on pageLogo configuration
 function updateFavicon() {
+    // The static SVG icon is authoritative; do not replace it with pageLogo.
+    if (document.querySelector('link[rel="icon"][type="image/svg+xml"]')) return;
+
     // Remove existing favicon links (except the first one we added)
     const existingFavicons = document.querySelectorAll('link[rel="icon"]');
     if (existingFavicons.length > 1) {

@@ -18,7 +18,7 @@ const portfolioConfig = {
     personal: {
         name: "Lloyd Enterina Agonia",
         title: "Robotics & AI Engineer",
-        pageTitle: "Lloyd Enterina Agonia - Portfolio",
+        pageTitle: "Lloyd Enterina Agonia — Robotics & AI Engineer",
         pageLogo: "/images/logo.jpg",
         greeting: "Hello.",
         profileImage: "/images/profile_optimized.jpg",
