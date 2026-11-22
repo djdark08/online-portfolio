@@ -6,13 +6,13 @@
 }
 
 :root {
-    --bg-color: #1e1e2f;
-    --card-bg: #2a2a3e;
+    --bg-color: #2c1a3e;
+    --card-bg: #3a2a4f;
     --text-primary: #ffffff;
-    --text-secondary: #a0a0b8;
-    --accent-color: #ff6b61;
-    --accent-hover: #ff5a4f;
-    --border-color: #3a3a4f;
+    --text-secondary: #c0a0d0;
+    --accent-color: #ff6b9d;
+    --accent-hover: #e85a95;
+    --border-color: #4a3a5e;
 }
 
 body {
