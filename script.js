@@ -992,6 +992,7 @@ function populateContact() {
                     </div>
                 </div>
                 <footer class="tcg-foot contact-social">
+                    <a class="resume-download" href="/LloydAgonia_Resume.pdf" download>↓ Résumé (PDF)</a>
                     ${socialLinks}
                 </footer>
             </div>
