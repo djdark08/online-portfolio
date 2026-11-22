@@ -4,6 +4,9 @@ const SESSION = 'portfolio-fix';
 const URL = 'http://localhost:8000/';
 const failures = [];
 
+// Start from a clean browser profile so stale CSS/JS cannot hide a regression.
+execFileSync('agent-browser', ['close', '--all'], { stdio: 'ignore' });
+
 function browser(...args) {
   return execFileSync('agent-browser', [...args, '--session', SESSION], { encoding: 'utf8' });
 }
