@@ -890,7 +890,7 @@ function populateProjectsWithTikTok() {
     let tiktokHTML = '';
     if (tiktokVideos.length > 0) {
         tiktokHTML = `
-            <div class="project-card gallery-tiktok-phone" style="background: transparent;">
+            <div class="gallery-phone-tile gallery-tiktok-phone">
                 <div class="iphone-container">
                     <div class="iphone-notch"></div>
                     <div class="iphone-screen">

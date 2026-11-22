@@ -4513,12 +4513,19 @@ html[data-motion="off"] .bio-word {
 
 /* ---------- 23. TikTok phone fits its tile -------------------------------- */
 
-.projects-grid .gallery-tiktok-phone {
+.projects-grid .gallery-phone-tile {
+    --phone-pad: 0.35rem;
+    --phone-radius: 15px;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
-    padding: 0.35rem;
+    min-width: 0;
+    padding: var(--phone-pad);
+    border: 1px solid var(--border-color);
+    border-radius: var(--phone-radius);
+    background-color: var(--card-bg);
     align-self: stretch;
 }
 
