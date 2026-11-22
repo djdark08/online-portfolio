@@ -1367,12 +1367,17 @@ function initSmoothScrolling() {
         let ticking = false;
         const syncActiveSection = () => {
             ticking = false;
-            const probe = window.scrollY + 140;
+            const scrollPadding = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
             let current = sections[0];
 
             sections.forEach((section) => {
-                if (section.offsetTop <= probe) current = section;
+                const scrollMargin = parseFloat(getComputedStyle(section).scrollMarginTop) || 0;
+                const top = section.getBoundingClientRect().top + window.scrollY;
+                if (top <= window.scrollY + scrollPadding + scrollMargin + 8) current = section;
             });
+
+            const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
+            if (atBottom) current = sections[sections.length - 1];
 
             const link = document.querySelector(`.nav-link[href="#${current.id}"]`);
             if (link && !link.classList.contains('active')) updateActiveNavLink(link);

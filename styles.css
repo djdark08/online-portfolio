@@ -4330,13 +4330,6 @@ html[data-motion="off"] .build-section.is-building::after {
     margin-top: auto;
 }
 
-/* The TikTok phone keeps its own shape and span. */
-.projects-grid .gallery-tiktok-phone {
-    grid-row: span 2;
-    height: auto;
-    align-self: start;
-}
-
 /* Moves never carry a cost pip or a damage figure any more. */
 .tcg-move {
     gap: 0.4rem;
@@ -4431,7 +4424,6 @@ html[data-motion="off"] .bio-word {
 /* ---------- 23. TikTok phone fits its tile -------------------------------- */
 
 .projects-grid .gallery-tiktok-phone {
-    grid-row: span 2;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -4442,8 +4434,8 @@ html[data-motion="off"] .bio-word {
 
 .projects-grid .gallery-tiktok-phone .iphone-container {
     box-sizing: border-box;
-    width: 100%;
-    height: auto;
+    width: auto;
+    height: 100%;
     max-width: 100%;
     max-height: 100%;
     aspect-ratio: 425 / 900;
