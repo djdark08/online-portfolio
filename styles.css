@@ -1535,6 +1535,12 @@ body:not(.loaded) * {
     font-weight: 500;
 }
 
+.references-note {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin: 0.6rem 0 0;
+}
+
 .reference-relationship {
     font-size: 0.9rem;
     color: var(--text-secondary);

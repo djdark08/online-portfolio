@@ -1690,14 +1690,7 @@ function populateReferences() {
                     extraClass: 'tcg-art--portrait'
                 })}
                 <div class="reference-title">${escapeHtml(reference.title)}</div>
-                <div class="tcg-moves reference-moves">
-                    <div class="tcg-move">
-                        <span class="tcg-move__name">${escapeHtml(reference.email)}</span>
-                    </div>
-                    <div class="tcg-move">
-                        <span class="tcg-move__name">${escapeHtml(reference.phone)}</span>
-                    </div>
-                </div>
+                <p class="references-note">References available on request.</p>
                 <footer class="tcg-foot">
                     <span><b>Role</b> ${escapeHtml(reference.relationship)}</span>
                 </footer>

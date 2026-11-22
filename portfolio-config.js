@@ -399,38 +399,30 @@ const portfolioConfig = {
     // Character References Section - EDITABLE
     references: {
         enabled: true,
-        title: "Character References",
+        title: "References",
         list: [
             {
                 name: "Dr. Ruvel J. Cuasito Sr. PhD.",
                 title: "USTP COT DEAN, CIT",
                 relationship: "Dean & Research Advisor",
-                email: "ruvel.cuasito@university.edu",
-                phone: "09171307793",
                 image: "/images/docruvel.png"
             },
             {
                 name: "Ms. Taurine C. Auxilio",
                 title: "USTP Chairperson, MIT",
                 relationship: "Industry Mentor",
-                email: "neveltaurine.cuasito@ustp.edu.ph",
-                phone: "09778038587",
                 image: "/images/mamtau.png"
             },
             {
                 name: "Engr. Helen Grace Gonzales",
                 title: "USTP Chairperson, ROBOTICS",
                 relationship: "Academic Supervisor",
-                email: "helen.grace@university.edu",
-                phone: "09674297770",
                 image: "/images/hg.png"
             },
             {
                 name: "Engr. Raymond S. Saldua",
                 title: "USTP Instructor, Industrial Automation",
                 relationship: "Academic Instructor",
-                email: "raymond.saldua@university.edu",
-                phone: "09757097300",
                 image: "/images/saldua.png"
             }
         ]
