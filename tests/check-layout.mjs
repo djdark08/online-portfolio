@@ -30,7 +30,7 @@ const sections = ['home', 'about', 'technical-skills', 'experience', 'projects',
 
 for (const [width, height] of [[1440, 900], [820, 1180], [390, 844]]) {
   browser('set', 'viewport', String(width), String(height));
-  browser('open', URL);
+  browser('eval', `window.location.href='${URL}'; 'ok'`);
   pause(600);
 
   evaluate("document.querySelector('#projects').scrollIntoView({block:'start',behavior:'instant'}); 'ok'");

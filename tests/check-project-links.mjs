@@ -18,7 +18,7 @@ function evaluate(expression) {
 }
 
 browser('set', 'viewport', '1440', '900');
-browser('open', 'http://localhost:8000/');
+browser('eval', "window.location.href='http://localhost:8000/'; 'ok'");
 execFileSync('sleep', ['1']);
 
 const actions = evaluate(`[...document.querySelectorAll('.tcg-foot__link')].map(el => ({

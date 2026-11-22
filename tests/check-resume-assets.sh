@@ -14,7 +14,7 @@ for asset in LloydAgonia_Resume.pdf favicon.svg favicon.ico; do
   fi
 done
 
-agent-browser open http://localhost:8000/ --session portfolio-fix >/dev/null 2>&1
+agent-browser eval "window.location.href='http://localhost:8000/'; 'ok'" --session portfolio-fix >/dev/null 2>&1
 sleep 1
 links=$(agent-browser eval "[...document.querySelectorAll('.resume-download')].map(a => a.getAttribute('href'))" --session portfolio-fix 2>/dev/null)
 count=$(agent-browser eval "document.querySelectorAll('.resume-download').length" --session portfolio-fix 2>/dev/null | tail -1)
