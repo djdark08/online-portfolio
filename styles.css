@@ -2242,6 +2242,24 @@ body:not(.loaded) * {
     border-radius: 0;
 }
 
+/* YouTube is always 16:9 and scales with the viewport. */
+.youtube-only-modal .video-modal-content {
+    width: min(92vw, 1200px);
+    border-radius: 15px;
+}
+
+.youtube-only-modal .video-modal-iframe-container {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+}
+
+.youtube-only-modal .video-modal-iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
 /* ===== PORTRAIT VIDEO MODALS ===== */
 
 /* Mobile Portrait Video - Full screen like YouTube mobile */
@@ -2260,8 +2278,10 @@ body:not(.loaded) * {
 }
 
 .video-modal.portrait-video.portrait-mobile .video-modal-iframe {
-    width: 100vw;
-    height: 56.25vw; /* 9:16 aspect ratio */
+    width: auto;
+    height: min(100vh, 177.7778vw); /* 9:16 aspect ratio */
+    aspect-ratio: 9 / 16;
+    max-width: 100vw;
     max-height: 100vh;
 }
 
@@ -2423,8 +2443,10 @@ body.modal-open {
     }
 
     .video-modal.portrait-video.portrait-mobile .video-modal-iframe {
-        width: 100vw;
-        height: 56.25vw; /* 9:16 aspect ratio */
+        width: auto;
+        height: min(100vh, 177.7778vw); /* 9:16 aspect ratio */
+        aspect-ratio: 9 / 16;
+        max-width: 100vw;
         max-height: 100vh;
     }
 
