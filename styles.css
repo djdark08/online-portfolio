@@ -4410,6 +4410,9 @@ html[data-motion="off"] .build-section.is-building::after {
 }
 
 .project-card .tcg-card__inner {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
     height: 100%;
 }
 
